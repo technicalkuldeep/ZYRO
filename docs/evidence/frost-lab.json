@@ -1,0 +1,39 @@
+{
+  "custody": "all participant states in one development process",
+  "groupPublicKey": "b8d8c5c2a96ba10226587b45940a8037cfd544ca531e42c398095a7507d04b39",
+  "keyGeneration": "three-party DKG",
+  "messageHex": "5a59524f2069736f6c617465642052656450616c6c61732046524f5354206c61622076313b206e6f742061205a63617368207472616e73616374696f6e",
+  "networkTransaction": false,
+  "pairs": [
+    {
+      "alteredMessageRejected": true,
+      "orchardRedDsaVerified": true,
+      "participants": [1, 2],
+      "randomizedPublicKey": "d06cbfae30f1cddc36b8a744f161062b0243324d43d000f3ef13553fe209ce8a",
+      "signature": "354598aa89c7396382bef5ed3e03475c4bb715cbbe3d5ae82d296270ff22a306d2b44a38fd57629b772b3360b199256f024146285c4a5057bc1d66e750dfa616",
+      "singleShareRejected": true,
+      "verified": true
+    },
+    {
+      "alteredMessageRejected": true,
+      "orchardRedDsaVerified": true,
+      "participants": [1, 3],
+      "randomizedPublicKey": "041fcb0664065217f239a6e53743f2990f46f67c68b8f9ba55cc0949d5d3fe35",
+      "signature": "b52949f0c5489cbb15e98f33fdc0b4648a50b54624d2eab6b6885a76543b2a320c8b1e3f3c90389a7c152c32003f0435435470a3f44f1c5350c5dd4cac64973d",
+      "singleShareRejected": true,
+      "verified": true
+    },
+    {
+      "alteredMessageRejected": true,
+      "orchardRedDsaVerified": true,
+      "participants": [2, 3],
+      "randomizedPublicKey": "74c41db8b7b89a68b90fc91919c767e5206e613f2e33ea1ab62e1eff5cdd84a1",
+      "signature": "ea3073a5ef1be5419bb154d689d802ca7fa8d5ef6e8bd7a67187be508ddfba2d417f762fdb84f24a02f73d5239de0db408c7036b55fdce699aaa3ab236bbd01a",
+      "singleShareRejected": true,
+      "verified": true
+    }
+  ],
+  "participants": 3,
+  "scope": "isolated-cryptographic-demonstration",
+  "threshold": 2
+}

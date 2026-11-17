@@ -1,0 +1,17 @@
+# Privacy and trust model
+
+Implemented data: server-held guest identifier, credit balance, creation time, challenge details, side acceptances, public keys/signatures and Arena history. Guest cookies remain private and are hashed to derive public IDs. Challenge information and acceptance receipts are public to the application. Arena history and observed transaction IDs are filtered to the current session; leaderboards expose abbreviated aliases and performance only.
+
+No seeds, spending keys, user wallet private keys, analytics SDKs, or backend wallet generation. The browser generates an ephemeral standard Ed25519 acceptance key. That key is not a Zcash wallet. Losing the guest cookie loses access; guest IDs do not let you recover it. The prototype has no account recovery.
+
+Actual shielded public-testnet payments and opt-in developer-custodied note recognition are demonstrated. Shielded transaction contents do not remove application metadata: the application still learns matching, sides, timestamps and request metadata. Network providers and operators may correlate traffic. Public challenge text may identify participants. Do not claim anonymous matching or complete financial privacy.
+
+The isolated CLI demo wallet keeps an encrypted mnemonic and age identity under ignored `.local/testnet-wallet`. The developer controls it; the app does not create wallets for users or present this as production self-custody. Read-only recognition opens `data.sqlite` and queries only wallet-recognized outputs, addresses, memos and amounts. It never opens the identity or encrypted key files. Demo recognition is forbidden in production and is disabled in `.env.example`.
+
+The developer-operated demo publishes its own test addresses, exact memo references, amounts, transaction IDs and funding evidence intentionally. That disclosure links the demo's application actions to shielded chain activity; it is not evidence of anonymous matching. Guest cookies, private wallet material and signer shares are excluded from evidence. The operator can alter a local wallet database, so note recognition trusts the developer wallet boundary in addition to the remote service's chain observations.
+
+Planned FROST 2-of-3 escrow assumes fewer than two malicious signers. Two colluding signers could disregard policy. Unavailable signers can stall payouts/refunds; FROST alone supplies neither automatic timeout refunds nor on-chain outcome enforcement. Oracle compromise can authorize the wrong winner. Separate operators, independent data verification, secure nonce lifecycle, backups and audited custody procedures are prerequisites.
+
+The policy validator receives trusted funding status, winner address and resolution-verification flag. Those inputs are not yet wired to authenticated wallet or oracle receipts. Separately, outcome recording verifies signatures under a configured oracle key; this authenticates an assertion, not the objective evidence contents. The policy engine is a tested business-policy boundary, not a completed escrow security system. Never connect signing to caller-controlled flags.
+
+Before public deployment: authenticate operators, enforce retention and deletion policy, assess jurisdiction-specific legal requirements, harden anti-abuse and guest farming, minimize logging, evaluate metadata exposure and obtain independent security review. No real-value deployment is in current scope.

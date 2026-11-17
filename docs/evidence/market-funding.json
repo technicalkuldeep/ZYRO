@@ -1,0 +1,59 @@
+{
+  "network": "testnet",
+  "custody": "Developer operates both guest participants and the local wallet; not independent escrow",
+  "marketId": "54612d8c-77eb-40f8-acb8-c2e3c509ec69",
+  "checkedAt": "2026-11-17T18:22:55.187Z",
+  "payments": [
+    {
+      "side": "YES",
+      "reference": "ZYRO:1:54612d8c-77eb-40f8-acb8-c2e3c509ec69:YES:6d2731ae3886e38ecae08e0694c26b8f",
+      "recipient": "utest18elgcqy2k5pk34jr6xhdjxvu7y0xy5k6q096z9k5zpy6vsgs4ksejy358l3lx4gfywj3w078kzrs76gps36uu83s9ynr3yvyacwy2dep",
+      "amountZatoshis": 1000000,
+      "status": "CONFIRMED",
+      "txid": "949aca173914433db7bb0868aaa3b162b3c170c36ce23ed7e2791a1d242e8d36",
+      "recognition": {
+        "id": "funding:54612d8c-77eb-40f8-acb8-c2e3c509ec69:dd3a2df3a749cfec53757dccac2b2a82a7ebd33d50f5aa99bb9f12a466ba6a97",
+        "marketId": "54612d8c-77eb-40f8-acb8-c2e3c509ec69",
+        "userId": "dd3a2df3a749cfec53757dccac2b2a82a7ebd33d50f5aa99bb9f12a466ba6a97",
+        "side": "YES",
+        "network": "testnet",
+        "agreementHash": "06b4e8ff2e181404548baebbbdc31c64abb21bcf458e6d382aad268cb59329c4",
+        "reference": "ZYRO:1:54612d8c-77eb-40f8-acb8-c2e3c509ec69:YES:6d2731ae3886e38ecae08e0694c26b8f",
+        "expectedZatoshis": 1000000,
+        "recipient": "utest18elgcqy2k5pk34jr6xhdjxvu7y0xy5k6q096z9k5zpy6vsgs4ksejy358l3lx4gfywj3w078kzrs76gps36uu83s9ynr3yvyacwy2dep",
+        "state": "CONFIRMED",
+        "receivedZatoshis": 1000000,
+        "confirmations": 4,
+        "txid": "949aca173914433db7bb0868aaa3b162b3c170c36ce23ed7e2791a1d242e8d36",
+        "checkedAt": "2026-11-17T18:21:40.508Z"
+      },
+      "duplicateRecheckVerified": true
+    },
+    {
+      "side": "NO",
+      "reference": "ZYRO:1:54612d8c-77eb-40f8-acb8-c2e3c509ec69:NO:ee47fd05629aa0b82998519f220fdc37",
+      "recipient": "utest18elgcqy2k5pk34jr6xhdjxvu7y0xy5k6q096z9k5zpy6vsgs4ksejy358l3lx4gfywj3w078kzrs76gps36uu83s9ynr3yvyacwy2dep",
+      "amountZatoshis": 1000000,
+      "status": "CONFIRMED",
+      "txid": "7743128f018b5b4e33be17b7d8d0c6fba54430746ac5d289dd67921556d64df1",
+      "recognition": {
+        "id": "funding:54612d8c-77eb-40f8-acb8-c2e3c509ec69:8e697b156967642513fbdacad70b176b0dc09f8c4db46175c20eac24c4185d1c",
+        "marketId": "54612d8c-77eb-40f8-acb8-c2e3c509ec69",
+        "userId": "8e697b156967642513fbdacad70b176b0dc09f8c4db46175c20eac24c4185d1c",
+        "side": "NO",
+        "network": "testnet",
+        "agreementHash": "06b4e8ff2e181404548baebbbdc31c64abb21bcf458e6d382aad268cb59329c4",
+        "reference": "ZYRO:1:54612d8c-77eb-40f8-acb8-c2e3c509ec69:NO:ee47fd05629aa0b82998519f220fdc37",
+        "expectedZatoshis": 1000000,
+        "recipient": "utest18elgcqy2k5pk34jr6xhdjxvu7y0xy5k6q096z9k5zpy6vsgs4ksejy358l3lx4gfywj3w078kzrs76gps36uu83s9ynr3yvyacwy2dep",
+        "state": "CONFIRMED",
+        "receivedZatoshis": 1000000,
+        "confirmations": 3,
+        "txid": "7743128f018b5b4e33be17b7d8d0c6fba54430746ac5d289dd67921556d64df1",
+        "checkedAt": "2026-11-17T18:22:51.798Z"
+      },
+      "duplicateRecheckVerified": true
+    }
+  ],
+  "settlementExecuted": false
+}

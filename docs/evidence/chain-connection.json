@@ -1,0 +1,17 @@
+{
+  "connected": true,
+  "provider": "lightwalletd",
+  "network": "testnet",
+  "reportedChain": "test",
+  "height": 4633003,
+  "reportedHeight": 4633003,
+  "blockHash": "000028be725fc67aee90a5f11bac725427ce071443f19b43c526ecb021f48eb8",
+  "software": {
+    "version": "v0.6.1",
+    "vendor": "ECC LightWalletD",
+    "nodeBuild": "v1.8.8+g009b60beac18",
+    "nodeSubversion": "/Zakura:1.8.8/"
+  },
+  "checkedAt": "2026-11-17T17:48:29.054Z",
+  "trust": "Remote lightwallet service observation; not independently verified consensus or deposit evidence."
+}
