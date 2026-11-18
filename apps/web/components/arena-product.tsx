@@ -1,5 +1,6 @@
-﻿"use client";
+"use client";
 import Link from "next/link";
+import { ArenaHub, roundHref } from "./arena-hub";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -30,6 +31,14 @@ export type ArenaData = {
   }[];
 };
 export function ArenaProduct() {
+  const path = usePathname();
+  return ["history", "leaderboard", "profile"].includes(path.split("/")[2]) ? (
+    <LegacyArenaProduct />
+  ) : (
+    <ArenaHub />
+  );
+}
+function LegacyArenaProduct() {
   const path = usePathname();
   const { user, refresh } = useAuth();
   const { data, error, reload } = useData<ArenaData>("/account/arena");
@@ -250,7 +259,7 @@ export function ArenaProduct() {
     </>
   );
 }
-export function Stats({ a }: { a: Balance }) {
+export function Stats({ a, pending }: { a: Balance; pending?: number }) {
   return (
     <>
       <div className="stat-grid">
@@ -274,7 +283,7 @@ export function Stats({ a }: { a: Balance }) {
           <b className="mono">{a.wins}</b> wins
         </span>
         <span>
-          <b className="mono">{a.played - a.wins}</b> losses
+          <b className="mono">{a.played - a.wins - (a.ties || 0)}</b> losses
         </span>
         <span>
           <b className="mono">{a.streak}</b> current streak
@@ -283,7 +292,16 @@ export function Stats({ a }: { a: Balance }) {
           <b className="mono">{points(a.net)}</b> net gameplay points
         </span>
         <span>
-          <b className="mono">{a.committed > 0 ? 1 : 0}</b> pending
+          <b className="mono">
+            {pending ?? a.pending ?? (a.committed > 0 ? 1 : 0)}
+          </b>{" "}
+          pending
+        </span>
+        <span>
+          <b className="mono">{points(a.earned || 0)}</b> gameplay points earned
+        </span>
+        <span>
+          <b className="mono">{points(a.lost || 0)}</b> gameplay points lost
         </span>
       </div>
     </>
@@ -363,10 +381,18 @@ export function RoundHistory({ rounds }: { rounds: Round[] }) {
           {rounds.map((r) => (
             <tr key={r.id}>
               <td>
-                <Link href="/arena/games/quick-draw">
-                  <strong>Quick draw · {r.side}</strong>
+                <Link href={roundHref(r)}>
+                  <strong>
+                    {r.marketId
+                      ? r.marketId.split(":")[0]
+                      : r.gameKey || "Quick draw"}{" "}
+                    · {r.choice || r.side}
+                  </strong>
                   <small className="table-sub">
-                    {date(r.createdAt)} · Signal: {r.botSide}
+                    {date(r.createdAt)} ·{" "}
+                    {r.gameKind === "market"
+                      ? "Scheduled market"
+                      : "Server-verified practice"}
                   </small>
                 </Link>
               </td>
@@ -379,9 +405,11 @@ export function RoundHistory({ rounds }: { rounds: Round[] }) {
                     ? "Pending"
                     : r.status === "CANCELLED"
                       ? "Cancelled"
-                      : r.payout
-                        ? "Won"
-                        : "Lost"}
+                      : r.result?.verdict === "TIE"
+                        ? "Tie / Refund"
+                        : r.payout
+                          ? "Won"
+                          : "Lost"}
                 </span>
               </td>
               <td className="mono">

@@ -4,6 +4,10 @@
 
 Open-source prediction challenges exploring conditional shielded payments on Zcash. MIT licensed. Blockchain operations are restricted to testnet/regtest.
 
+## Round 5 — Arena expansion
+
+**Round 5 Arena expansion:** five quick games, two precommitted bot games, category discovery, genuine Coinbase BTC/ETH/SOL candle markets, persistent resolution jobs and `/admin/arena` operations are now available. [Round 5 implementation and live verification](docs/round5-report.md), [fairness algorithm](docs/arena-fairness.md), [market-data policy](docs/arena-market-data.md). Run `npm run test:arena-browser` for the expanded UI and `npm run test:crypto-live` for an actual scheduled candle check. Wallet and on-chain settlement work remains separate.
+
 ## Round 4 — Arena accounts and operator console
 
 The consumer homepage, Google sign-in, experience chooser, authenticated Arena and private administration now sit alongside the preserved testnet prototype. [Round 4 implementation and verification report](docs/round4-report.md).

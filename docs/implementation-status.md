@@ -1,5 +1,9 @@
 # Implementation status
 
+## Round 5 Arena expansion — November 19, 2026
+
+Five quick games and two bot games use precommitted server secrets and the existing point ledger. Coinbase-backed BTC/ETH/SOL markets, immutable specifications, completed-candle evidence and MongoDB-backed resolution/recovery are implemented. Six upcoming markets and actual resolved BTC/ETH/SOL outcomes were recorded; a separate future BTC stake/connection-recreation/settlement test passed against live data. The 100-point grant, Google identity binding, admin credits and existing chain interfaces remain intact. [Full Round 5 report](round5-report.md), [redacted public-source evidence](evidence/round5-arena.json).
+
 ## Round 4 consumer account foundation — November 19, 2026
 
 Premium landing, chooser, Google OAuth/OIDC implementation, MongoDB-backed 100-point Arena accounts, practice-game accounting, private admin directory and audited grants are implemented. Actual Atlas transaction tests (12), 45 responsive product-browser checks, legacy browser regression, lint/typecheck/build, and three read-only live Zcash checks passed. Interactive Google consent still requires owner verification. Full scope, limitations and execution results: [Round 4 report](round4-report.md). Historical Phase 3 evidence below is preserved.

@@ -329,7 +329,7 @@ export default function Home() {
             ],
             [
               "Does Arena predict live cryptocurrency prices?",
-              "No. The working quick game uses a committed random draw. Real-world event settlement and live price oracles are future work.",
+              "Arena offers committed-random quick games and scheduled BTC, ETH and SOL predictions using Coinbase Exchange completed candles. Charts show recent historical data, not a live price feed. On-chain settlement remains separate research.",
             ],
             [
               "Is private settlement live?",

@@ -116,6 +116,18 @@ export function payout(stake: number, fee = 10000) {
 }
 export type Session = { id: string; credits: number; createdAt: string };
 export type Round = {
+  gameKey?: string;
+  gameKind?: "quick" | "market";
+  choice?: string;
+  rulesHash?: string;
+  preparedAt?: string;
+  marketId?: string;
+  result?: {
+    values: number[];
+    label: string;
+    bot?: string;
+    verdict: "WIN" | "LOSS" | "TIE" | "REFUND";
+  };
   id: string;
   userId: string;
   side: Side;

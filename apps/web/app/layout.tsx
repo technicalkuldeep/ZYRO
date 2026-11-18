@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Shell } from "../components/shell";
 import "./globals.css";
 import "./premium.css";
+import "./arena-expansion.css";
 export const metadata: Metadata = {
   title: "ZYRO — Predict Freely. Settle Privately.",
   description:

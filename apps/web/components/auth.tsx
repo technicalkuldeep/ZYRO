@@ -10,6 +10,10 @@ export type Player = {
   createdAt: string;
 };
 export type Balance = {
+  pending?: number;
+  ties?: number;
+  earned?: number;
+  lost?: number;
   available: number;
   committed: number;
   played: number;

@@ -30,6 +30,7 @@ const arenaLinks = [
 const adminLinks = [
   ["/admin", "Overview", LayoutDashboard],
   ["/admin/users", "Players", UserRound],
+  ["/admin/arena", "Arena operations", BarChart3],
   ["/admin/audit", "Audit trail", ShieldCheck],
 ] as const;
 export function Shell({ children }: { children: React.ReactNode }) {
@@ -207,7 +208,11 @@ function Frame({ children }: { children: React.ReactNode }) {
                 <b>
                   {path === "/arena" || path === "/admin"
                     ? "Overview"
-                    : path.split("/").at(-1)}
+                    : path.startsWith("/arena/crypto/")
+                      ? "Crypto market"
+                      : path.startsWith("/admin/users/")
+                        ? "Player details"
+                        : path.split("/").at(-1)?.replaceAll("-", " ")}
                 </b>
               </span>
               {!isAdmin && (

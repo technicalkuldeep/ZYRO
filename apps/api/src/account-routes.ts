@@ -11,6 +11,12 @@ import { Accounts, type User, type Identity } from "./accounts.js";
 import { Fault } from "./engine.js";
 import { hash } from "./policy.js";
 import { rateLimit } from "express-rate-limit";
+import { arenaServices } from "./arena-services.js";
+import {
+  gameDefinitions,
+  categories,
+} from "../../../packages/shared/src/arena-games.js";
+import { pairs, type Pair } from "./price-provider.js";
 
 export function cookie(req: Request, name: string) {
   return req.headers.cookie
@@ -81,16 +87,14 @@ export function accountRoutes(
       )
         ? requested
         : "/arena";
-    await db
-      .sessions()
-      .insertOne({
-        _id: hash(state),
-        kind: "oauth",
-        expiresAt: new Date(Date.now() + 600000),
-        nonce,
-        verifier: codeVerifier,
-        returnTo,
-      });
+    await db.sessions().insertOne({
+      _id: hash(state),
+      kind: "oauth",
+      expiresAt: new Date(Date.now() + 600000),
+      nonce,
+      verifier: codeVerifier,
+      returnTo,
+    });
     res.cookie("zyro_oauth", state, { ...options, maxAge: 600000 });
     res.redirect(
       client.generateAuthUrl({
@@ -109,13 +113,11 @@ export function accountRoutes(
     const state = typeof req.query.state === "string" ? req.query.state : "";
     if (!state || state !== cookie(req, "zyro_oauth"))
       throw new Fault("Invalid OAuth state. Start sign-in again.", 400);
-    const attempt = await db
-      .sessions()
-      .findOneAndDelete({
-        _id: hash(state),
-        kind: "oauth",
-        expiresAt: { $gt: new Date() },
-      });
+    const attempt = await db.sessions().findOneAndDelete({
+      _id: hash(state),
+      kind: "oauth",
+      expiresAt: { $gt: new Date() },
+    });
     res.clearCookie("zyro_oauth", options);
     if (!attempt?.nonce || !attempt.verifier)
       throw new Fault("Sign-in expired or already used", 400);
@@ -212,6 +214,84 @@ export function accountRoutes(
     res.json(await (await getAccounts()).leaderboard()),
   );
   router.use("/account", authenticated);
+  router.get("/account/discovery", async (_req, res) => {
+    const services = await arenaServices(await getAccounts());
+    const markets = await services.crypto.list();
+    res.json({
+      games: gameDefinitions,
+      categories: categories.map((name) => ({
+        name,
+        count:
+          name === "All"
+            ? gameDefinitions.length +
+              markets.filter(
+                (m) =>
+                  m.status === "OPEN" &&
+                  !m.disabled &&
+                  m.spec.cutoff > Date.now(),
+              ).length
+            : name === "Quick Predictions"
+              ? gameDefinitions.filter((g) => g.type === "quick").length
+              : name === "Challenge the Bot"
+                ? gameDefinitions.filter((g) => g.type === "bot").length
+                : name === "Crypto"
+                  ? markets.filter(
+                      (m) =>
+                        m.status === "OPEN" &&
+                        !m.disabled &&
+                        m.spec.cutoff > Date.now(),
+                    ).length
+                  : 0,
+      })),
+      markets,
+    });
+  });
+  router.post("/account/games/:key/prepare", async (req, res) => {
+    const b = z
+      .object({ operation: z.string().uuid() })
+      .strict()
+      .parse(req.body);
+    res.json(
+      await (
+        await arenaServices(await getAccounts())
+      ).games.prepare(res.locals.accountUser._id, req.params.key, b.operation),
+    );
+  });
+  router.post("/account/games/enter", async (req, res) =>
+    res.json(
+      await (
+        await arenaServices(await getAccounts())
+      ).games.enter(res.locals.accountUser._id, req.body),
+    ),
+  );
+  router.get("/account/prices/:pair", async (req, res) => {
+    const pair = z.enum(pairs).parse(req.params.pair);
+    const candles = await (
+      await arenaServices(await getAccounts())
+    ).crypto.provider.candles(pair as Pair);
+    res.json({
+      pair,
+      source: "Coinbase Exchange",
+      granularity: 60,
+      fetchedAt: (
+        await arenaServices(await getAccounts())
+      ).crypto.provider.fetchedAt(pair),
+      candles: candles.slice(-90),
+    });
+  });
+  router.get("/account/crypto/:id", async (req, res) => {
+    const s = await arenaServices(await getAccounts());
+    const market = await s.crypto.markets().findOne({ _id: req.params.id });
+    if (!market) throw new Fault("Market not found", 404);
+    res.json(market);
+  });
+  router.post("/account/crypto/:id/predict", async (req, res) =>
+    res.json(
+      await (
+        await arenaServices(await getAccounts())
+      ).crypto.enter(res.locals.accountUser._id, req.params.id, req.body),
+    ),
+  );
   router.get("/account/arena", async (_req, res) =>
     res.json(await (await getAccounts()).arena(res.locals.accountUser._id)),
   );
@@ -236,8 +316,8 @@ export function accountRoutes(
     z.object({}).strict().parse(req.body);
     res.json(
       await (
-        await getAccounts()
-      ).resolve(
+        await arenaServices(await getAccounts())
+      ).games.reveal(
         res.locals.accountUser._id,
         z.string().uuid().parse(req.params.id),
       ),
@@ -262,6 +342,75 @@ export function accountRoutes(
   router.get("/admin", async (_req, res) =>
     res.json(await (await getAccounts()).overview()),
   );
+  router.get("/admin/arena", async (_req, res) => {
+    const a = await getAccounts(),
+      s = await arenaServices(a);
+    res.json({
+      definitions: gameDefinitions,
+      totals: {
+        resolved: await s.crypto
+          .markets()
+          .countDocuments({ status: "RESOLVED" }),
+        awaiting: await s.crypto
+          .markets()
+          .countDocuments({ status: "PENDING_VERIFICATION" }),
+        pending: await s.crypto.markets().countDocuments({ status: "OPEN" }),
+      },
+      games: await a
+        .rounds()
+        .aggregate([
+          {
+            $group: {
+              _id: { $ifNull: ["$gameKey", "quick-draw-legacy"] },
+              rounds: { $sum: 1 },
+              pending: {
+                $sum: { $cond: [{ $eq: ["$status", "PENDING"] }, 1, 0] },
+              },
+              payouts: { $sum: "$payout" },
+            },
+          },
+        ])
+        .toArray(),
+      markets: await s.crypto.list(),
+      attempts: await s.crypto
+        .attempts()
+        .find()
+        .sort({ at: -1 })
+        .limit(50)
+        .toArray(),
+      errors: await a.db
+        .collection("arena_game_errors")
+        .find()
+        .sort({ at: -1 })
+        .limit(30)
+        .toArray(),
+      audit: await a.db
+        .collection("arena_content_audit")
+        .find()
+        .sort({ at: -1 })
+        .limit(30)
+        .toArray(),
+    });
+  });
+  router.post("/admin/arena/:id/disable", async (req, res) => {
+    const b = z
+      .object({
+        reason: z.string().trim().min(5).max(500),
+        operation: z.string().uuid(),
+      })
+      .strict()
+      .parse(req.body);
+    res.json(
+      await (
+        await arenaServices(await getAccounts())
+      ).crypto.disable(
+        res.locals.accountUser,
+        req.params.id,
+        b.reason,
+        b.operation,
+      ),
+    );
+  });
   router.get("/admin/users", async (req, res) => {
     const q = z
       .object({
@@ -327,5 +476,26 @@ export function accountRoutes(
       ),
     );
   });
+  router.use(
+    async (error: unknown, req: Request, res: Response, next: NextFunction) => {
+      if (/^\/account\/(games|arena|crypto)/.test(req.path)) {
+        try {
+          const a = await getAccounts();
+          await a.db.collection("arena_game_errors").insertOne({
+            at: new Date(),
+            userId: res.locals.accountUser?._id,
+            type: error instanceof Error ? error.name : "Error",
+            message:
+              error instanceof Fault
+                ? error.message
+                : "Game request rejected or unavailable",
+          });
+        } catch {
+          /* Account failures must preserve the original error. */
+        }
+      }
+      next(error);
+    },
+  );
   return router;
 }

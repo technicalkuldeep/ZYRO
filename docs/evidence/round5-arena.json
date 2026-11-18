@@ -1,0 +1,321 @@
+{
+  "recordedAt": "2026-11-18T21:34:00.339Z",
+  "database": "zyro",
+  "provider": "Coinbase Exchange",
+  "upcoming": [
+    {
+      "id": "BTC-USD:1795041000",
+      "pair": "BTC-USD",
+      "threshold": 62392.97,
+      "cutoff": "2026-11-18T22:29:55.000Z",
+      "observation": "2026-11-18T22:31:00.000Z",
+      "specHash": "9e94b56b2492e30bb9f588871c812157e7f147bcd34b2df96a2e2cc554dac810",
+      "reference": {
+        "time": 1795036320,
+        "low": 62388.36,
+        "high": 62448.96,
+        "open": 62448.95,
+        "close": 62392.97,
+        "volume": 43.47177798,
+        "raw": [1795036320, 62388.36, 62448.96, 62448.95, 62392.97, 43.47177798]
+      }
+    },
+    {
+      "id": "ETH-USD:1795041000",
+      "pair": "ETH-USD",
+      "threshold": 1753.76,
+      "cutoff": "2026-11-18T22:29:55.000Z",
+      "observation": "2026-11-18T22:31:00.000Z",
+      "specHash": "12d4a080c2dbb30a27d8e87c7465d7d0c9573f793c79f69097c19c2f69d03946",
+      "reference": {
+        "time": 1795036260,
+        "low": 1753.64,
+        "high": 1754.56,
+        "open": 1753.75,
+        "close": 1753.76,
+        "volume": 59.6337676,
+        "raw": [1795036260, 1753.64, 1754.56, 1753.75, 1753.76, 59.6337676]
+      }
+    },
+    {
+      "id": "SOL-USD:1795041000",
+      "pair": "SOL-USD",
+      "threshold": 73.05,
+      "cutoff": "2026-11-18T22:29:55.000Z",
+      "observation": "2026-11-18T22:31:00.000Z",
+      "specHash": "67ab21ef034fd614227eb0fa54c8a9cdcc37bdbb042eec2aba4774ba91b7204f",
+      "reference": {
+        "time": 1795036260,
+        "low": 73.04,
+        "high": 73.07,
+        "open": 73.05,
+        "close": 73.05,
+        "volume": 64.3990669,
+        "raw": [1795036260, 73.04, 73.07, 73.05, 73.05, 64.3990669]
+      }
+    },
+    {
+      "id": "BTC-USD:1795039200",
+      "pair": "BTC-USD",
+      "threshold": 62406.92,
+      "cutoff": "2026-11-18T21:59:55.000Z",
+      "observation": "2026-11-18T22:01:00.000Z",
+      "specHash": "0d830ae9f1fe38c7c00580ab63d5fcc67b51477d72db40b078a51c88bb34bd1c",
+      "reference": {
+        "time": 1795037220,
+        "low": 62397.9,
+        "high": 62425.98,
+        "open": 62416.1,
+        "close": 62406.92,
+        "volume": 9.37367037,
+        "raw": [1795037220, 62397.9, 62425.98, 62416.1, 62406.92, 9.37367037]
+      }
+    },
+    {
+      "id": "ETH-USD:1795039200",
+      "pair": "ETH-USD",
+      "threshold": 1759.41,
+      "cutoff": "2026-11-18T21:59:55.000Z",
+      "observation": "2026-11-18T22:01:00.000Z",
+      "specHash": "ac7ae5bc4f9ab1a961c208ff12517b8c37a04f2abecdbb3daec50829897fbd41",
+      "reference": {
+        "time": 1795037460,
+        "low": 1759.2,
+        "high": 1760.25,
+        "open": 1759.81,
+        "close": 1759.41,
+        "volume": 21.03457314,
+        "raw": [1795037460, 1759.2, 1760.25, 1759.81, 1759.41, 21.03457314]
+      }
+    },
+    {
+      "id": "SOL-USD:1795039200",
+      "pair": "SOL-USD",
+      "threshold": 72.95,
+      "cutoff": "2026-11-18T21:59:55.000Z",
+      "observation": "2026-11-18T22:01:00.000Z",
+      "specHash": "02ccaa78753045e363eed2678d3140fe01a9ad351aa8157e8179f6ecaf6d103f",
+      "reference": {
+        "time": 1795037460,
+        "low": 72.91,
+        "high": 72.99,
+        "open": 72.99,
+        "close": 72.95,
+        "volume": 62.89371558,
+        "raw": [1795037460, 72.91, 72.99, 72.99, 72.95, 62.89371558]
+      }
+    }
+  ],
+  "resolved": [
+    {
+      "id": "BTC-USD:1795037400",
+      "spec": {
+        "version": 1,
+        "pair": "BTC-USD",
+        "provider": "Coinbase Exchange",
+        "threshold": 62392.97,
+        "thresholdUnits": "6239297000000",
+        "operator": "GT",
+        "candleStart": 1795037400,
+        "observationTime": 1795037460000,
+        "cutoff": 1795037395000,
+        "timezone": "UTC",
+        "granularity": 60,
+        "method": "CLOSE_LAST_TRADE",
+        "equality": "NO",
+        "unavailable": "RETRY_60_SECONDS_REFUND_AFTER_24_HOURS",
+        "reference": {
+          "time": 1795036320,
+          "low": 62388.36,
+          "high": 62448.96,
+          "open": 62448.95,
+          "close": 62392.97,
+          "volume": 43.47177798,
+          "raw": [
+            1795036320, 62388.36, 62448.96, 62448.95, 62392.97, 43.47177798
+          ]
+        },
+        "referenceFetchedAt": "2026-11-18T21:13:17.593Z"
+      },
+      "specHash": "2ed23d8805ac239ebe095de17e2c697395c44c68a8046cd413234f45b50d07bd",
+      "outcome": "NO",
+      "evidence": {
+        "pair": "BTC-USD",
+        "provider": "Coinbase Exchange",
+        "candle": {
+          "time": 1795037400,
+          "low": 62327.1,
+          "high": 62362.62,
+          "open": 62327.1,
+          "close": 62356.85,
+          "volume": 4.75252128,
+          "raw": [1795037400, 62327.1, 62362.62, 62327.1, 62356.85, 4.75252128]
+        },
+        "fetchedAt": "2026-11-18T21:31:23.125Z",
+        "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60&start=2026-11-18T21:30:00.000Z&end=2026-11-18T21:31:00.000Z"
+      }
+    },
+    {
+      "id": "ETH-USD:1795037400",
+      "spec": {
+        "version": 1,
+        "pair": "ETH-USD",
+        "provider": "Coinbase Exchange",
+        "threshold": 1753.76,
+        "thresholdUnits": "175376000000",
+        "operator": "GT",
+        "candleStart": 1795037400,
+        "observationTime": 1795037460000,
+        "cutoff": 1795037395000,
+        "timezone": "UTC",
+        "granularity": 60,
+        "method": "CLOSE_LAST_TRADE",
+        "equality": "NO",
+        "unavailable": "RETRY_60_SECONDS_REFUND_AFTER_24_HOURS",
+        "reference": {
+          "time": 1795036260,
+          "low": 1753.64,
+          "high": 1754.56,
+          "open": 1753.75,
+          "close": 1753.76,
+          "volume": 59.6337676,
+          "raw": [1795036260, 1753.64, 1754.56, 1753.75, 1753.76, 59.6337676]
+        },
+        "referenceFetchedAt": "2026-11-18T21:13:18.294Z"
+      },
+      "specHash": "47a80f64dbd094f95bdf1710f8eb88925ace4867da2ac75759b7cc9d73cfbd67",
+      "outcome": "YES",
+      "evidence": {
+        "pair": "ETH-USD",
+        "provider": "Coinbase Exchange",
+        "candle": {
+          "time": 1795037400,
+          "low": 1758.69,
+          "high": 1760.37,
+          "open": 1758.8,
+          "close": 1760.17,
+          "volume": 22.65018568,
+          "raw": [1795037400, 1758.69, 1760.37, 1758.8, 1760.17, 22.65018568]
+        },
+        "fetchedAt": "2026-11-18T21:31:24.639Z",
+        "url": "https://api.exchange.coinbase.com/products/ETH-USD/candles?granularity=60&start=2026-11-18T21:30:00.000Z&end=2026-11-18T21:31:00.000Z"
+      }
+    },
+    {
+      "id": "SOL-USD:1795037400",
+      "spec": {
+        "version": 1,
+        "pair": "SOL-USD",
+        "provider": "Coinbase Exchange",
+        "threshold": 73.05,
+        "thresholdUnits": "7305000000",
+        "operator": "GT",
+        "candleStart": 1795037400,
+        "observationTime": 1795037460000,
+        "cutoff": 1795037395000,
+        "timezone": "UTC",
+        "granularity": 60,
+        "method": "CLOSE_LAST_TRADE",
+        "equality": "NO",
+        "unavailable": "RETRY_60_SECONDS_REFUND_AFTER_24_HOURS",
+        "reference": {
+          "time": 1795036260,
+          "low": 73.04,
+          "high": 73.07,
+          "open": 73.05,
+          "close": 73.05,
+          "volume": 64.3990669,
+          "raw": [1795036260, 73.04, 73.07, 73.05, 73.05, 64.3990669]
+        },
+        "referenceFetchedAt": "2026-11-18T21:13:19.029Z"
+      },
+      "specHash": "62cee3d083cf405519881e2df4c5340ae94b7016a8a4e2b148b9ce8a5969fbd9",
+      "outcome": "NO",
+      "evidence": {
+        "pair": "SOL-USD",
+        "provider": "Coinbase Exchange",
+        "candle": {
+          "time": 1795037400,
+          "low": 72.93,
+          "high": 73.01,
+          "open": 72.94,
+          "close": 73.01,
+          "volume": 75.29204605,
+          "raw": [1795037400, 72.93, 73.01, 72.94, 73.01, 75.29204605]
+        },
+        "fetchedAt": "2026-11-18T21:31:25.478Z",
+        "url": "https://api.exchange.coinbase.com/products/SOL-USD/candles?granularity=60&start=2026-11-18T21:30:00.000Z&end=2026-11-18T21:31:00.000Z"
+      }
+    }
+  ],
+  "verification": {
+    "verifiedAt": "2026-11-18T21:21:13.313Z",
+    "market": {
+      "_id": "BTC-USD:1795036800",
+      "attempts": 1,
+      "createdAt": "2026-11-18T21:18:25.793Z",
+      "disabled": false,
+      "nextAttempt": "2026-11-18T21:21:10.000Z",
+      "spec": {
+        "version": 1,
+        "pair": "BTC-USD",
+        "provider": "Coinbase Exchange",
+        "threshold": 62442.39,
+        "thresholdUnits": "6244239000000",
+        "operator": "GT",
+        "candleStart": 1795036800,
+        "observationTime": 1795036860000,
+        "cutoff": 1795036795000,
+        "timezone": "UTC",
+        "granularity": 60,
+        "method": "CLOSE_LAST_TRADE",
+        "equality": "NO",
+        "unavailable": "RETRY_60_SECONDS_REFUND_AFTER_24_HOURS",
+        "reference": {
+          "time": 1795036620,
+          "low": 62364,
+          "high": 62450.37,
+          "open": 62364,
+          "close": 62442.39,
+          "volume": 36.59874334,
+          "raw": [1795036620, 62364, 62450.37, 62364, 62442.39, 36.59874334]
+        },
+        "referenceFetchedAt": "2026-11-18T21:18:25.792Z"
+      },
+      "specHash": "9da099c7d5ad08efd7b64578ac1aa81c2df2de25cccfc014b6a4ace2aaec556f",
+      "status": "RESOLVED",
+      "entryRevision": 1,
+      "evidence": {
+        "pair": "BTC-USD",
+        "provider": "Coinbase Exchange",
+        "candle": {
+          "time": 1795036800,
+          "low": 62408.51,
+          "high": 62526.34,
+          "open": 62526.33,
+          "close": 62437.02,
+          "volume": 31.763402,
+          "raw": [1795036800, 62408.51, 62526.34, 62526.33, 62437.02, 31.763402]
+        },
+        "fetchedAt": "2026-11-18T21:21:11.914Z",
+        "url": "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60&start=2026-11-18T21:20:00.000Z&end=2026-11-18T21:21:00.000Z"
+      },
+      "outcome": "NO"
+    },
+    "prediction": {
+      "side": "YES",
+      "stake": 10,
+      "payout": 0,
+      "result": {
+        "values": [],
+        "label": "NO",
+        "verdict": "LOSS"
+      }
+    },
+    "available": 90,
+    "committed": 0,
+    "settlementEntries": 1,
+    "restartedConnection": true,
+    "isolatedDatabase": true
+  }
+}

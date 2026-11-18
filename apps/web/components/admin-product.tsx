@@ -386,8 +386,11 @@ function UserDetail({ id }: { id: string }) {
             <h2>Gameplay statistics</h2>
             <p className="mono">
               Wins {data.account.wins} · Losses{" "}
-              {data.account.played - data.account.wins} · Current streak{" "}
-              {data.account.streak} · Net gameplay points {data.account.net}
+              {data.account.played -
+                data.account.wins -
+                (data.account.ties || 0)}{" "}
+              · Current streak {data.account.streak} · Net gameplay points{" "}
+              {data.account.net}
             </p>
             <p className="muted">
               Additional admin grants: {points(data.account.grants)}. Excluded

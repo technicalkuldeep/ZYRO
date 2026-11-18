@@ -1,0 +1,88 @@
+Git status (no commit or push performed):
+ M README.md
+ M apps/api/src/account-routes.ts
+ M apps/api/src/accounts.ts
+ M apps/api/src/server.ts
+ M apps/web/app/layout.tsx
+ M apps/web/app/page.tsx
+ M apps/web/components/admin-product.tsx
+ M apps/web/components/arena-product.tsx
+ M apps/web/components/auth.tsx
+ M apps/web/components/shell.tsx
+ M apps/web/next-env.d.ts
+ M docs/implementation-status.md
+ M package.json
+ M packages/shared/src/index.ts
+ M scripts/mongo-check.ts
+ M scripts/product-browser-check.ts
+?? apps/api/src/arena-games.ts
+?? apps/api/src/arena-services.ts
+?? apps/api/src/crypto-markets.ts
+?? apps/api/src/game-random.ts
+?? apps/api/src/price-provider.ts
+?? apps/web/app/admin/arena/
+?? apps/web/app/arena-expansion.css
+?? apps/web/app/arena/bot/
+?? apps/web/app/arena/crypto/
+?? apps/web/app/arena/games/[key]/
+?? apps/web/components/admin-arena.tsx
+?? apps/web/components/arena-hub.tsx
+?? apps/web/components/crypto-experience.tsx
+?? apps/web/components/game-art.tsx
+?? apps/web/components/quick-game.tsx
+?? docs/arena-fairness.md
+?? docs/arena-market-data.md
+?? docs/evidence/round5-arena.json
+?? docs/round5-git-status.txt
+?? docs/round5-report.md
+?? packages/shared/src/arena-games.ts
+?? scripts/round5-browser.ts
+?? scripts/round5-evidence.ts
+?? scripts/round5-live.ts
+?? tests/arena-expansion.test.ts
+?? tests/arena-games.test.ts
+
+Changed/new file inventory:
+README.md
+apps/api/src/account-routes.ts
+apps/api/src/accounts.ts
+apps/api/src/server.ts
+apps/web/app/layout.tsx
+apps/web/app/page.tsx
+apps/web/components/admin-product.tsx
+apps/web/components/arena-product.tsx
+apps/web/components/auth.tsx
+apps/web/components/shell.tsx
+apps/web/next-env.d.ts
+docs/implementation-status.md
+package.json
+packages/shared/src/index.ts
+scripts/mongo-check.ts
+scripts/product-browser-check.ts
+apps/api/src/arena-games.ts
+apps/api/src/arena-services.ts
+apps/api/src/crypto-markets.ts
+apps/api/src/game-random.ts
+apps/api/src/price-provider.ts
+apps/web/app/admin/arena/page.tsx
+apps/web/app/arena-expansion.css
+apps/web/app/arena/bot/page.tsx
+apps/web/app/arena/crypto/[id]/page.tsx
+apps/web/app/arena/crypto/page.tsx
+apps/web/app/arena/games/[key]/page.tsx
+apps/web/components/admin-arena.tsx
+apps/web/components/arena-hub.tsx
+apps/web/components/crypto-experience.tsx
+apps/web/components/game-art.tsx
+apps/web/components/quick-game.tsx
+docs/arena-fairness.md
+docs/arena-market-data.md
+docs/evidence/round5-arena.json
+docs/round5-git-status.txt
+docs/round5-report.md
+packages/shared/src/arena-games.ts
+scripts/round5-browser.ts
+scripts/round5-evidence.ts
+scripts/round5-live.ts
+tests/arena-expansion.test.ts
+tests/arena-games.test.ts

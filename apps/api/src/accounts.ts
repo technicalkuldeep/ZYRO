@@ -25,6 +25,9 @@ export type Account = {
   net: number;
   streak: number;
   grants: number;
+  ties?: number;
+  earned?: number;
+  lost?: number;
 };
 export type Identity = {
   sub: string;
@@ -132,32 +135,39 @@ export class Accounts {
       this.accounts().createIndex({ net: -1, wins: -1 }),
       this.rounds().createIndex({ userId: 1, createdAt: -1 }),
       this.rounds().createIndex({ userId: 1, operation: 1 }, { unique: true }),
-      this.rounds().createIndex(
-        { userId: 1 },
-        { unique: true, partialFilterExpression: { status: "PENDING" } },
-      ),
       this.rounds().createIndex({ status: 1, resolveAt: 1 }),
       this.ledger().createIndex({ userId: 1, createdAt: -1 }),
       this.ledger().createIndex({ operation: 1 }, { unique: true }),
       this.audits().createIndex({ userId: 1, createdAt: -1 }),
       this.audits().createIndex({ createdAt: -1 }),
     ]);
-    await this.db
-      .collection("arena_games")
-      .updateOne(
-        { key: "committed-draw" },
-        {
-          $setOnInsert: {
-            key: "committed-draw",
-            question: "Will the next draw land at 50 or above?",
-            type: "random-practice",
-            minStake: 10,
-            maxStake: 100,
-            revealDelayMs: 5000,
-          },
+    // Replace Round 4's one-pending-round constraint: scheduled markets must not block short games.
+    const oldIndex = (await this.rounds().indexes()).find(
+      (i) => i.name === "userId_1",
+    );
+    if (oldIndex) await this.rounds().dropIndex("userId_1");
+    await this.rounds().createIndex(
+      { userId: 1, gameKind: 1 },
+      {
+        unique: true,
+        partialFilterExpression: { status: "PENDING", gameKind: "quick" },
+        name: "one_pending_quick",
+      },
+    );
+    await this.db.collection("arena_games").updateOne(
+      { key: "committed-draw" },
+      {
+        $setOnInsert: {
+          key: "committed-draw",
+          question: "Will the next draw land at 50 or above?",
+          type: "random-practice",
+          minStake: 10,
+          maxStake: 100,
+          revealDelayMs: 5000,
         },
-        { upsert: true },
-      );
+      },
+      { upsert: true },
+    );
     // Prove transaction support before accepting any account mutation.
     await this.atomic(async (session) => {
       await this.users().findOne({}, { session });
@@ -296,10 +306,10 @@ export class Accounts {
     return r.status === "PENDING" ? visible : r;
   }
   async arena(userId: string) {
-    const [account, rounds, ledger] = await Promise.all([
+    const [account, rounds, ledger, totals, pending] = await Promise.all([
       this.accounts().findOne({ _id: userId }),
       this.rounds()
-        .find({ userId })
+        .find({ userId, status: { $ne: "PENDING" } })
         .sort({ createdAt: -1 })
         .limit(100)
         .toArray(),
@@ -308,8 +318,44 @@ export class Accounts {
         .sort({ createdAt: -1 })
         .limit(100)
         .toArray(),
+      this.rounds()
+        .aggregate<{ earned: number; lost: number; ties: number }>([
+          { $match: { userId, status: "RESOLVED" } },
+          {
+            $group: {
+              _id: null,
+              earned: {
+                $sum: {
+                  $max: [
+                    0,
+                    { $subtract: [{ $ifNull: ["$payout", 0] }, "$stake"] },
+                  ],
+                },
+              },
+              lost: { $sum: { $cond: [{ $eq: ["$payout", 0] }, "$stake", 0] } },
+              ties: { $sum: { $cond: [{ $eq: ["$payout", "$stake"] }, 1, 0] } },
+            },
+          },
+        ])
+        .toArray(),
+      this.rounds()
+        .find({ userId, status: "PENDING" })
+        .sort({ createdAt: -1 })
+        .toArray(),
     ]);
-    return { account, rounds: rounds.map((r) => this.publicRound(r)), ledger };
+    return {
+      account: account
+        ? {
+            ...account,
+            earned: totals[0]?.earned || 0,
+            lost: totals[0]?.lost || 0,
+            ties: totals[0]?.ties || 0,
+            pending: pending.length,
+          }
+        : null,
+      rounds: [...pending, ...rounds].map((r) => this.publicRound(r)),
+      ledger,
+    };
   }
   async predict(userId: string, side: Side, stake: number, operation: string) {
     z.object({
@@ -385,6 +431,7 @@ export class Accounts {
     return this.atomic(async (session) => {
       const r = await this.rounds().findOne({ _id: id, userId }, { session });
       if (!r) throw new Fault("Round not found", 404);
+      if (r.gameKey) throw new Fault("Use the versioned Arena resolver", 409);
       if (r.status !== "PENDING") return r;
       if (Date.now() < Date.parse(r.resolveAt))
         throw new Fault("Round is still running", 409);
@@ -449,6 +496,11 @@ export class Accounts {
         { session },
       );
       if (!round) throw new Fault("Round not found", 404);
+      if (round.gameKind === "market")
+        throw new Fault(
+          "Scheduled predictions follow their published refund policy",
+          409,
+        );
       if (round.status === "CANCELLED") return round;
       if (round.status !== "PENDING")
         throw new Fault("Settled rounds cannot be cancelled", 409);

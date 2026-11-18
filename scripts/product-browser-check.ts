@@ -140,7 +140,7 @@ try {
   await page.getByRole("button", { name: "Confirm prediction" }).click();
   await page
     .getByRole("heading", {
-      name: /Your call is committed|The reveal is ready/,
+      name: /Your call is locked|Ready for the reveal/,
     })
     .waitFor();
   if (
@@ -154,7 +154,7 @@ try {
   await page
     .getByRole("button", { name: "Reveal result", exact: true })
     .click({ timeout: 15000 });
-  await page.locator(".result-reveal").waitFor();
+  await page.locator(".game-result-banner").waitFor();
   await page.screenshot({
     path: "artifacts/round4/game-result-390.png",
     fullPage: true,
@@ -185,9 +185,7 @@ try {
   await page.getByRole("button", { name: "Search", exact: true }).click();
   await page.getByRole("link", { name: "QA Forecaster", exact: true }).click();
   await page.getByRole("button", { name: "Add credits" }).click();
-  await page
-    .getByLabel(/Reason \(required/)
-    .fill("Browser acceptance grant");
+  await page.getByLabel(/Reason \(required/).fill("Browser acceptance grant");
   await page.getByRole("button", { name: "Review grant" }).click();
   await page.screenshot({
     path: "artifacts/round4/admin-grant-dialog-390.png",
@@ -204,9 +202,7 @@ try {
     throw new Error("Grant did not persist");
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.getByRole("button", { name: "Add credits" }).click();
-  await page
-    .getByLabel(/Reason \(required/)
-    .fill("Dialog appearance only");
+  await page.getByLabel(/Reason \(required/).fill("Dialog appearance only");
   await page.getByRole("button", { name: "Review grant" }).click();
   await page.screenshot({
     path: "artifacts/round4/admin-grant-dialog-1440.png",
