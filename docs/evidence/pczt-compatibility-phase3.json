@@ -1,0 +1,7 @@
+{
+  "authorizationAllowed": false,
+  "effectsCompatible": false,
+  "errorCategory": "UnknownConsensusBranchId",
+  "parseCompatible": true,
+  "pcztCrate": "0.8.0-rc.1"
+}

@@ -1,6 +1,27 @@
 # Implementation status
 
-Last verified: **November 17, 2026, Phase 2**. All work predates any asserted ZCG funding decision. No GitHub push or funded milestone completion is claimed.
+Last verified: **November 18, 2026, Phase 3 checkpoint**. No GitHub push or funded milestone completion is claimed. The table below retains Phase 2 feature boundaries; Phase 3 additions and verification follow here.
+
+## Phase 3 additions
+
+- Maintained Ironwood signing support confirmed in upstream frost-tools; no new cryptographic patch introduced.
+- Genuine unsigned 1,000,000-zatoshi PCZT created using the existing testnet developer wallet after syncing. Nothing signed or broadcast.
+- New read-only Rust PCZT binary computes the v6 digest from actual effects; upstream redacted fixture reproduces the known digest. Rejects malformed/noncanonical/trailing data. Always reports authorizationAllowed=false.
+- Strict normalized policy runtime validation and integer/unknown-field/invalid-outcome rejection tests. These do not validate actual PCZT outputs or independently authenticate signer context.
+- Broader secret-file exclusions, publication-inventory heuristic scanner, release checklist, architecture diagram, environment guidance and recording walkthrough.
+- **53 offline tests passed, 5 external skips; 3 opt-in live tests passed; 4 project Rust tests passed** (one FROST, one transaction decoder, two PCZT diagnostics). Typecheck, lint and production build passed.
+- Maintained upstream `cargo test --locked -p zcash-sign --lib`: **3 passed**, separately from the four ZYRO Rust tests.
+- Fresh PCZT cross-stack probe: **blocked**, parse succeeds but effects extraction returns `UnknownConsensusBranchId` under maintained frost-tools' older consensus stack. [Compatibility receipt](evidence/pczt-compatibility-phase3.json). No consensus branch rewrite or cryptographic patch applied.
+- Browser regression passed: create, two-party signed matching, Arena reserve/reveal, eight routes at three widths, no page errors. Production dependency audit: **0 vulnerabilities**; full development audit not rerun.
+- Both historical funding notes re-recognized against the actual read-only wallet database and live testnet chain: exact 1,000,000 zatoshis each, 1,901 / 1,895 confirmations. [Redacted receipt](evidence/funding-recheck-phase3.json).
+- PostgreSQL runner failed explicitly for missing TEST_DATABASE_URL after retrying outside the sandbox. Docker/PostgreSQL absent; no regtest verification.
+- Fresh transfer observation: height 4,633,072, tip 4,634,955, 1,884 confirmations. [Receipt](evidence/shielded-transfer-phase3.json).
+- Initial live checks failed in the network sandbox; the permitted external rerun passed. Initial new Rust rejection test exposed trailing-byte acceptance; wrapper fixed and suite passed. No unresolved failure in the project offline/Rust suites.
+- Full independent signer policy, final consent manifest, durable signer replay/nonce journal, process separation, settlement states, threshold custody/funding and on-chain payout remain unfinished. No signing endpoint enabled.
+
+See [engineering checkpoint](phase3-checkpoint.md) and [bounty preparation](bounty-release.md).
+
+## Phase 2 feature inventory
 
 | Component                                                                           | Status                             | Actual evidence / remaining boundary                                                                                                                                                                 |
 | ----------------------------------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -1,5 +1,17 @@
 # Verified public testnet demonstration
 
+November 18 recheck: the transfer below was independently observed again at tip
+**4,634,955**, with **1,884 confirmations**, checked at
+`2026-11-18T07:01:09.652Z`. [Fresh receipt](evidence/shielded-transfer-phase3.json).
+This remains an ordinary wallet transfer, not threshold settlement.
+
+Both market funding notes were independently rechecked on November 18 against
+the actual read-only wallet database, including exact receiver/memo/amount, and
+live chain inclusion: [fresh funding receipt](evidence/funding-recheck-phase3.json).
+Reproduce with `node --env-file=.env --import tsx scripts/verify-funding-evidence.ts`
+after opting into the documented developer-wallet configuration. This command
+only reads wallet/chain data and saves a redacted receipt under ignored `.local`.
+
 Date: November 17, 2026. **Actual public testnet activity, not a mock or regtest transaction.**
 
 ## Signed shielded transfer

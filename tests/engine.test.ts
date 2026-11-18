@@ -204,7 +204,10 @@ describe("settlement policy: independent of transaction signing", () => {
   it.each([
     { recipient: "attacker" },
     { amount: 2 },
+    { amount: 19990000.5 },
+    { amount: Number.NaN },
     { fee: 0 },
+    { fee: 10001 },
     { change: 1 },
     { outputs: 2 },
     { agreementHash: "wrong" },
@@ -224,6 +227,26 @@ describe("settlement policy: independent of transaction signing", () => {
       expect(() => validateSettlement(m, p, { ...context, ...c })).toThrow();
     expect(() =>
       validateSettlement({ ...m, status: "MATCHED" }, p, context),
+    ).toThrow();
+  });
+  it("fails closed on untyped coordinator flags, unknown fields and invalid outcomes", () => {
+    for (const change of [
+      { funded: "true" },
+      { settled: 0 },
+      { resolutionVerified: "yes" },
+    ])
+      expect(() =>
+        validateSettlement(m, p, { ...context, ...change } as typeof context),
+      ).toThrow();
+    expect(() =>
+      validateSettlement(m, { ...p, allowed: true } as Proposal, context),
+    ).toThrow();
+    expect(() =>
+      validateSettlement(
+        { ...m, outcome: "INVALID" } as unknown as Market,
+        p,
+        context,
+      ),
     ).toThrow();
   });
 });

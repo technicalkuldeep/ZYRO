@@ -22,7 +22,8 @@ case "${1:-}" in
  history)
    "$DEVTOOL" wallet -w "$WALLET_DIR" list-tx --json
    ;;
- send)
+ send|propose)
+   operation="$1"
    recipient="${2:?shielded testnet recipient required}"
    amount="${3:-1000000}"
    memo="${4:-ZYRO testnet transfer demonstration; no market escrow}"
@@ -30,8 +31,16 @@ case "${1:-}" in
    case "$recipient" in utest1*|ztestsapling1*) ;; *) echo 'Shielded testnet recipient required' >&2;exit 1;; esac
    [[ "$amount" =~ ^[0-9]+$ && ${#amount} -le 9 && "$amount" -ge 10000 && "$amount" -le 100000000 ]] || { echo 'Invalid testnet integer amount' >&2;exit 1; }
    RUST_LOG=off "$DEVTOOL" wallet -w "$WALLET_DIR" get-info | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["chain_name"] in ("test","testnet"), "Refusing non-testnet service"'
-   # One confirmation is explicit for this valueless testnet demo only.
-   "$DEVTOOL" wallet -w "$WALLET_DIR" send --identity "$IDENTITY" --address "$recipient" --value "$amount" --memo "$memo" --min-confirmations 1
+   if [[ "$operation" == propose ]]; then
+     # Private PCZT stays ignored. No signing key is loaded and nothing is broadcast.
+     # Unique file prevents overwriting an earlier proposal or uncertain send.
+     proposal="$(mktemp "$WALLET_DIR/proposal-XXXXXXXX.pczt")"
+     "$DEVTOOL" pczt -w "$WALLET_DIR" create --address "$recipient" --value "$amount" --memo "$memo" --output "$proposal"
+     printf 'Unsigned proposal saved locally: %s\n' "$proposal"
+   else
+     # One confirmation is explicit for this valueless testnet demo only.
+     "$DEVTOOL" wallet -w "$WALLET_DIR" send --identity "$IDENTITY" --address "$recipient" --value "$amount" --memo "$memo" --min-confirmations 1
+   fi
    ;;
- *) echo 'Usage: testnet-wallet.sh init|info|address|sync|balance|history|send SHIELDED_TESTNET_ADDRESS [ZATOSHIS]' >&2;exit 1;;
+ *) echo 'Usage: testnet-wallet.sh init|info|address|sync|balance|history|send|propose SHIELDED_TESTNET_ADDRESS [ZATOSHIS]' >&2;exit 1;;
 esac

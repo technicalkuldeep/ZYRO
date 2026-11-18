@@ -1,0 +1,9 @@
+{
+  "authorizationAllowed": false,
+  "consensusBranchId": "77190ad9",
+  "digestSource": "PCZT transaction effects, not coordinator metadata",
+  "privateMaterialEmitted": false,
+  "reason": "Diagnostic only: network, disclosures, commitments, escrow ownership, funding, consent, outcome and replay policy have not been verified",
+  "shieldedSighash": "81d59d35740299ee5689c018f55daf4de90b4d863b2af780ebe63454cea4314d",
+  "transactionVersion": 6
+}

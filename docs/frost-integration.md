@@ -1,5 +1,11 @@
 # Real FROST demonstration and integration boundary
 
+Phase 3 update (November 18): maintained frost-tools has merged Ironwood support.
+ZYRO now reproduces its public v6 fixture digest with the newer pinned wallet
+stack and computes a digest from a newly constructed unsigned wallet PCZT.
+Neither diagnostic authorizes signing. See [exact versions, policy gaps and
+reproduction](phase3-checkpoint.md). An integrated FROST payout is still absent.
+
 ## Verified
 
 `services/zcash` runs real **three-party distributed key generation**, producing distinct participant key packages and a common even-Y group key. No trusted dealer is used. Each of the pairs **1+2, 1+3, and 2+3** produces a rerandomized RedPallas FROST signature with fresh nonces and a fresh randomizer.

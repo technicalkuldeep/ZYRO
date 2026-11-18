@@ -3,6 +3,17 @@ node_modules/
 dist/
 .env
 .env.local
+.env.*
+!.env.example
+**/*.sqlite
+**/*.sqlite-*
+**/*.db
+**/*.db-*
+**/*.pem
+**/*.key
+**/*.age
+**/*.pczt
+!services/zcash/transaction-inspect/tests/fixtures/ironwood_v6.pczt
 data/
 artifacts/
 *.tsbuildinfo

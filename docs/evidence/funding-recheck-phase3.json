@@ -1,0 +1,30 @@
+{
+  "network": "testnet",
+  "marketId": "54612d8c-77eb-40f8-acb8-c2e3c509ec69",
+  "custody": "Existing developer wallet, not threshold custody",
+  "payments": [
+    {
+      "side": "YES",
+      "txid": "949aca173914433db7bb0868aaa3b162b3c170c36ce23ed7e2791a1d242e8d36",
+      "amountZatoshis": 1000000,
+      "pool": "ironwood",
+      "outputIndex": 1,
+      "minedHeight": 4633084,
+      "confirmations": 1901,
+      "checkedAt": "2026-11-18T07:12:47.157Z",
+      "exactWalletReceiverAndMemoRecognized": true
+    },
+    {
+      "side": "NO",
+      "txid": "7743128f018b5b4e33be17b7d8d0c6fba54430746ac5d289dd67921556d64df1",
+      "amountZatoshis": 1000000,
+      "pool": "ironwood",
+      "outputIndex": 0,
+      "minedHeight": 4633090,
+      "confirmations": 1895,
+      "checkedAt": "2026-11-18T07:12:49.236Z",
+      "exactWalletReceiverAndMemoRecognized": true
+    }
+  ],
+  "thresholdSettlementExecuted": false
+}

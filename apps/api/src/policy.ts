@@ -1,5 +1,28 @@
 import { createHash } from "node:crypto";
 import { agreement, canonical, payout, type Market } from "@zyro/shared";
+import { z } from "zod";
+// This normalized policy is not a PCZT verifier or a signing authorization API.
+// Runtime checks matter even when TypeScript callers claim the correct types.
+const proposalSchema = z
+  .object({
+    agreementHash: z.string().regex(/^[a-f0-9]{64}$/),
+    network: z.enum(["testnet", "regtest"]),
+    recipient: z.string().min(1),
+    amount: z.number().int().safe().positive(),
+    fee: z.number().int().safe().nonnegative(),
+    change: z.number().int().safe().nonnegative(),
+    outputs: z.number().int().safe().positive(),
+    resolutionEvidence: z.string().min(1),
+  })
+  .strict();
+const contextSchema = z
+  .object({
+    settled: z.boolean(),
+    funded: z.boolean(),
+    winnerAddress: z.string().min(1),
+    resolutionVerified: z.boolean(),
+  })
+  .strict();
 export const hash = (value: unknown) =>
   createHash("sha256")
     .update(typeof value === "string" ? value : canonical(value))
@@ -24,9 +47,11 @@ export function validateSettlement(
     resolutionVerified: boolean;
   },
 ) {
+  proposalSchema.parse(p);
+  contextSchema.parse(context);
   if (
     m.status !== "RESOLVED" ||
-    !m.outcome ||
+    !["YES", "NO"].includes(m.outcome || "") ||
     !context.resolutionVerified ||
     !m.evidence ||
     p.resolutionEvidence !== m.evidence

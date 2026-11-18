@@ -21,6 +21,19 @@ Transfer: [`0ce5d017e8a3c72751913348b1c5a9e2bf1ff742386776fa800903046b4a4a0c`](h
 
 ## Run locally
 
+Phase 3: [engineering checkpoint](docs/phase3-checkpoint.md),
+[bounty release and 3-minute recording walkthrough](docs/bounty-release.md).
+The read-only PCZT diagnostic derives a real v6 transaction digest; it never
+authorizes signing. Threshold market settlement remains unfinished.
+
+| Verification level  | Features                                                                                                                            |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Live public testnet | Ordinary shielded transfer, wallet-recognized challenge funding, transaction observation                                            |
+| Offline tests       | Markets/Arena, signed acceptances, oracle authentication, normalized settlement policy, real isolated FROST, PCZT digest regression |
+| Regtest only        | None claimed                                                                                                                        |
+| Simulated/practice  | Free Arena credits and explicitly labeled example markets                                                                           |
+| Planned             | Independent PCZT policy signers, threshold market payout/refund, complete settlement lifecycle                                      |
+
 Requirements: Node **22.19+** and npm for the core product; WSL/Rust for the real transaction decoder and FROST lab. Docker is needed for PostgreSQL and Z3 regtest, but SQLite and public testnet allow independent development.
 
 ```sh
@@ -63,6 +76,36 @@ Browser checks require Microsoft Edge locally (`channel: msedge`) and a running 
 
 ## Architecture and integration
 
+```mermaid
+flowchart LR
+  Browser[Next.js browser] --> API[Express market and Arena API]
+  API --> DB[(SQLite / PostgreSQL adapter)]
+  API --> Observer[Read-only transaction and funding observation]
+  Observer --> LWD[Testnet lightwalletd]
+  Observer --> Parser[Pinned librustzcash decoder]
+  Operator[Developer wallet CLI] --> LWD
+  Lab[Isolated Rust FROST lab]
+  PCZT[Read-only PCZT digest diagnostic]
+```
+
+The disconnected lab and diagnostic have no authority over API payouts.
+
+### Environment and process setup
+
+Use [.env.example](.env.example) as the complete variable reference.
+`DATABASE_URL` selects PostgreSQL; empty selects SQLite. `POSTGRES_PASSWORD` is
+required for local Compose; `TEST_DATABASE_URL` selects a dedicated integration
+database. `PORT`, `WEB_ORIGIN` and optional `API_URL` configure local processes.
+For chain observation choose `LIGHTWALLETD_URL` plus `ZCASH_TX_INSPECTOR`, or
+`ZCASH_RPC_URL` with private RPC credentials, and set `ZCASH_NETWORK=testnet`.
+`ZCASH_GENESIS_HASH` constrains regtest identity. `ORACLE_PUBLIC_KEY` enables trusted
+outcome attestations. `ZYRO_CUSTODIAL_DEMO` and `ZCASH_DEMO_WALLET_DB` /
+`ZCASH_DEMO_RECEIVER` enable the optional local wallet-recognition demo; leave it
+disabled for ordinary setup. Never put wallet keys in environment variables.
+
+Run both processes with `npm run dev`, or use separate terminals:
+`npm run dev -w @zyro/api` and `npm run dev -w @zyro/web`.
+
 ![ZYRO market explorer](docs/screenshots/markets-desktop.png)
 
 [Mobile explorer](docs/screenshots/markets-mobile.png) · [Arena](docs/screenshots/arena-desktop.png)
@@ -84,6 +127,14 @@ Guest cookies are bearer credentials (HttpOnly, SameSite Lax; Secure in producti
 App operators see prediction choices and request metadata. Shielded payments do not hide application data. Node observation alone does not prove shielded recipient or amount; the opt-in demo requires wallet-recognized note evidence. Threshold signers can collude or go offline; refunds depend on their availability. The settlement validator presently checks a normalized proposal with trusted context, not an actual PCZT or independently authenticated oracle evidence. Transaction threshold signing remains disabled; the normal wallet transfer and isolated FROST signatures are real and separately labeled.
 
 This is a testnet prototype, not an audited deployment. Guest farming makes rankings unsuitable for prizes. The API never receives wallet seeds or spending keys. Optional demo recipient addresses and transfers are testnet-only, developer-custodied and explicitly labeled; no automatic payout/refund is enabled. No analytics, mainnet operations, credit purchases or redemptions are implemented. Keep API and RPC bound to loopback until deployment authentication, retention, abuse controls and operator access are hardened.
+
+## Roadmap
+
+Next milestones: align threshold tooling with the active testnet consensus stack;
+fund a genuine threshold account under renewed participant consent; implement
+independent PCZT commitment/payout verification and durable signer replay/nonce
+records; complete a confirmed threshold payout; then verify PostgreSQL and Z3
+regtest. See the [Phase 3 checkpoint](docs/phase3-checkpoint.md) for precise gaps.
 
 ## License
 
