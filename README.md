@@ -4,6 +4,30 @@
 
 Open-source prediction challenges exploring conditional shielded payments on Zcash. MIT licensed. Blockchain operations are restricted to testnet/regtest.
 
+## Round 4 — Arena accounts and operator console
+
+The consumer homepage, Google sign-in, experience chooser, authenticated Arena and private administration now sit alongside the preserved testnet prototype. [Round 4 implementation and verification report](docs/round4-report.md).
+
+- **Arena:** Google OpenID Connect, a one-time **100 ZYRO Points** grant, MongoDB Atlas transactions, saved predictions, ledger, gameplay rankings and milestones. Points have no monetary value.
+- **Administration:** the configured Google-verified owner email is bound to its immutable Google `sub`. User search, details, virtual point grants, and an append-only application audit trail are server-authorized.
+- **Testnet:** existing markets and developer wallet observations retain their existing SQLite/PostgreSQL storage. No legacy records or guest credit balances are migrated or deleted. Google login is independent of testnet wallet access.
+- **Mainnet:** unavailable. Threshold settlement and live event oracles remain unfinished.
+
+Required root `.env`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI=http://127.0.0.1:3000/api/auth/google/callback`, `MONGODB_URI`, `MONGODB_DB_NAME=zyro`, `ADMIN_GOOGLE_EMAIL=web3kuldeep@gmail.com`. Keep `WEB_ORIGIN=http://127.0.0.1:3000` and `PORT=4000`. Configure that exact callback URI in Google Cloud. Opaque random session tokens are hashed in MongoDB; `SESSION_SECRET` is unnecessary. Atlas must support replica-set transactions. Account APIs return 503 if Atlas is unavailable; there is no account fallback to SQLite or memory.
+
+```powershell
+Set-Location D:\ZYRO
+npm ci
+npm run dev
+# Separate terminal for opt-in verification:
+npm run test:mongo
+npm run test:product-browser
+```
+
+Open `http://127.0.0.1:3000/`, `/choose`, `/arena`, `/arena/leaderboard`, and `/admin`. The last route requires the authorized Google identity. Interactive Google consent must be checked using the owner's browser; automated identity fixtures are confined to isolated test databases and are not production login bypasses.
+
+The older product inventory below describes the preserved developer/guest prototype. Authenticated Arena uses the new MongoDB foundation, rather than the legacy 1,000-credit guest engine.
+
 Transparent financial networks expose payment relationships. ZYRO combines off-chain fixed-stake YES/NO agreements with a planned shielded settlement layer, and introduces newcomers through a genuinely free practice Arena.
 
 ## Current product

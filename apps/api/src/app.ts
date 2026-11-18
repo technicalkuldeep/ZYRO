@@ -13,7 +13,9 @@ import { lightwalletStatus } from "./lightwallet.js";
 import { recordOutcome } from "./resolution.js";
 import { FundingService } from "./funding.js";
 import { demoWalletConfig } from "./demo-wallet.js";
-export function createApp(store: Store) {
+import { accountRoutes } from "./account-routes.js";
+import { Accounts } from "./accounts.js";
+export function createApp(store: Store, accounts?: () => Promise<Accounts>) {
   const app = express();
   const engine = new Engine(store);
   const monitor = new TransactionMonitor(store);
@@ -32,7 +34,7 @@ export function createApp(store: Store) {
     "/api",
     rateLimit({
       windowMs: 60000,
-      limit: 180,
+      limit: 600,
       standardHeaders: "draft-8",
       legacyHeaders: false,
     }),
@@ -49,6 +51,7 @@ export function createApp(store: Store) {
         .json({ error: "Origin or client header rejected" });
     next();
   });
+  if (accounts) app.use("/api", accountRoutes(accounts));
   app.get("/api/health", (_req, res) =>
     res.json({
       ok: true,

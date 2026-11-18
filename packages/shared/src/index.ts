@@ -124,7 +124,7 @@ export type Round = {
   draw: number;
   commitment: string;
   secret?: string;
-  status: "PENDING" | "RESOLVED";
+  status: "PENDING" | "RESOLVED" | "CANCELLED";
   outcome?: Side;
   createdAt: string;
   resolveAt: string;

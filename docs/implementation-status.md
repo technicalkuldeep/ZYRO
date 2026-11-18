@@ -1,5 +1,9 @@
 # Implementation status
 
+## Round 4 consumer account foundation — November 19, 2026
+
+Premium landing, chooser, Google OAuth/OIDC implementation, MongoDB-backed 100-point Arena accounts, practice-game accounting, private admin directory and audited grants are implemented. Actual Atlas transaction tests (12), 45 responsive product-browser checks, legacy browser regression, lint/typecheck/build, and three read-only live Zcash checks passed. Interactive Google consent still requires owner verification. Full scope, limitations and execution results: [Round 4 report](round4-report.md). Historical Phase 3 evidence below is preserved.
+
 Last verified: **November 18, 2026, Phase 3 checkpoint**. No GitHub push or funded milestone completion is claimed. The table below retains Phase 2 feature boundaries; Phase 3 additions and verification follow here.
 
 ## Phase 3 additions

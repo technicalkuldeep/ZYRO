@@ -8,19 +8,21 @@
     "packages/*"
   ],
   "engines": {
-    "node": ">=22.19"
+    "node": "\u003e=22.19"
   },
   "scripts": {
     "dev": "concurrently -k -n api,web \"npm run dev -w @zyro/api\" \"npm run dev -w @zyro/web\"",
     "build": "npm run build -w @zyro/web",
-    "typecheck": "tsc --noEmit -p apps/api && npm run typecheck -w @zyro/web",
+    "typecheck": "tsc --noEmit -p apps/api \u0026\u0026 npm run typecheck -w @zyro/web",
     "test": "vitest run",
     "lint": "eslint apps packages tests",
     "test:browser": "tsx scripts/browser-check.ts",
     "test:postgres": "tsx --env-file-if-exists=.env scripts/postgres-check.ts",
     "format": "prettier --write apps packages tests scripts docs *.md *.json *.yml .github/workflows/*.yml",
     "chain:probe": "tsx --env-file-if-exists=.env scripts/chain-probe.ts",
-    "chain:observe": "tsx --env-file-if-exists=.env scripts/observe-transaction.ts"
+    "chain:observe": "tsx --env-file-if-exists=.env scripts/observe-transaction.ts",
+    "test:mongo": "tsx --env-file-if-exists=.env scripts/mongo-check.ts",
+    "test:product-browser": "tsx --env-file-if-exists=.env scripts/product-browser-check.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

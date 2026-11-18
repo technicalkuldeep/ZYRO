@@ -63,18 +63,8 @@ try {
   await opponentPage.getByText(/^MATCHED · testnet$/).waitFor();
   await opponent.close();
   await page.goto("http://127.0.0.1:3000/arena");
-  await page.getByRole("button", { name: "Lock prediction" }).waitFor();
-  await page.getByRole("button", { name: "Lock prediction" }).click();
-  await page
-    .getByRole("button", { name: "Reveal result", exact: true })
-    .click({ timeout: 12000 });
-  await page.getByText("Verify the commitment").waitFor();
-  await page.locator("body").click({ position: { x: 900, y: 100 } });
-  await page.waitForTimeout(800);
-  await page.screenshot({
-    path: "artifacts/arena-desktop.png",
-    fullPage: true,
-  });
+  await page.waitForURL(/signin/);
+  await page.getByRole("link", { name: /Continue with Google/ }).waitFor();
   for (const width of [375, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     for (const path of [
@@ -105,7 +95,7 @@ try {
   }
   if (errors.length) throw new Error(errors.join("\n"));
   console.log(
-    "PASS: create, two-party signed matching, Arena reserve/reveal, 8 routes at 3 widths, no page errors.",
+    "PASS: create, two-party signed matching, Arena authentication gate, 8 routes at 3 widths, no page errors.",
   );
 } finally {
   await browser.close();
