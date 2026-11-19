@@ -104,7 +104,7 @@ describe("Coinbase live message validation", () => {
     vi.useFakeTimers();
     const sockets: Record<string, any>[] = [];
     const f = new LivePrices(() => {
-      const ws = { send: vi.fn(), close: vi.fn() };
+      const ws = { readyState: 1, send: vi.fn(), close: vi.fn() };
       sockets.push(ws);
       return ws as unknown as WebSocket;
     });

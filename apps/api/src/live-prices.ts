@@ -1,4 +1,19 @@
 import { pairs, priceUnits, type Pair } from "./price-provider.js";
+import pino from "pino";
+import CoinbaseSocket from "ws";
+const logger = pino();
+type PriceSocket = WebSocket & { terminate?: () => void };
+function coinbaseSocket(): PriceSocket {
+  const ws = new CoinbaseSocket("wss://ws-feed.exchange.coinbase.com", {
+    handshakeTimeout: 15000,
+    maxPayload: 1024 * 1024,
+    perMessageDeflate: false,
+  });
+  // ws is an EventEmitter: retain one error sink through intentional shutdown,
+  // when the lifecycle handlers have already been detached.
+  ws.on("error", () => {});
+  return ws as unknown as PriceSocket;
+}
 type LiveBar = {
   time: number;
   open: number;
@@ -22,17 +37,17 @@ export class LivePrices {
   metrics = { received: 0, accepted: 0, rejected: 0, reconnects: 0, gaps: 0 };
   state = "Connecting";
   generation = 0;
-  private socket?: WebSocket;
+  private socket?: PriceSocket;
   private timer?: ReturnType<typeof setTimeout>;
   private monitor?: ReturnType<typeof setInterval>;
   private stopped = true;
   private attempt = 0;
   private connectedAt = 0;
+  private connectionStarted = 0;
+  private closeRequested = false;
+  private finishConnection?: () => void;
   private bars = new Map<string, LiveBar>();
-  constructor(
-    private connectSocket = () =>
-      new WebSocket("wss://ws-feed.exchange.coinbase.com"),
-  ) {}
+  constructor(private connectSocket: () => PriceSocket = coinbaseSocket) {}
   fresh(pair: Pair, now = Date.now()) {
     const t = this.ticks.get(pair);
     return (
@@ -143,62 +158,131 @@ export class LivePrices {
     this.stopped = false;
     this.connect();
     this.monitor = setInterval(() => {
+      if (this.socket?.readyState === 3) this.finishConnection?.();
       if (
-        this.state === "Connected" &&
-        pairs.some(
-          (p) => Date.now() - (this.hearts.get(p) || this.connectedAt) > 12000,
-        )
+        (this.socket?.readyState === 0 &&
+          Date.now() - this.connectionStarted > 15000) ||
+        (this.state === "Connected" &&
+          pairs.some(
+            (p) =>
+              Date.now() - (this.hearts.get(p) || this.connectedAt) > 12000,
+          ))
       )
-        this.socket?.close();
+        this.closeSocket();
       this.notify();
     }, 1000);
     this.monitor.unref();
   }
+  private closeSocket() {
+    const ws = this.socket;
+    if (!ws || this.closeRequested) return;
+    this.closeRequested = true;
+    // CONNECTING close may synchronously emit error in Node. Detach first.
+    ws.onerror = null;
+    this.state = this.stopped ? "Data unavailable" : "Reconnecting";
+    try {
+      if (ws.readyState !== 3 && ws.terminate) ws.terminate();
+      else if (ws.readyState === 0 || ws.readyState === 1) ws.close();
+    } catch {
+      logger.warn(
+        "Coinbase WebSocket close failed; waiting for transport closure",
+      );
+    }
+    if (ws.readyState === 3) this.finishConnection?.();
+  }
+  private reconnect() {
+    if (this.stopped || this.timer || this.socket) return;
+    this.state = "Reconnecting";
+    this.metrics.reconnects++;
+    this.timer = setTimeout(
+      () => {
+        this.timer = undefined;
+        this.connect();
+      },
+      Math.min(30000, 500 * 2 ** Math.min(this.attempt++, 6)) *
+        (0.75 + Math.random() * 0.25),
+    );
+    this.timer.unref();
+    this.notify();
+  }
   private connect() {
-    if (this.stopped) return;
+    if (this.stopped || this.socket || this.timer) return;
     this.state = this.attempt ? "Reconnecting" : "Connecting";
     this.notify();
-    const ws = this.connectSocket();
+    let ws: PriceSocket;
+    try {
+      ws = this.connectSocket();
+    } catch {
+      logger.warn("Coinbase WebSocket connection failed; retrying");
+      this.reconnect();
+      return;
+    }
     this.socket = ws;
+    this.connectionStarted = Date.now();
+    this.closeRequested = false;
+    let finished = false,
+      failed = false;
+    const current = () => !finished && !this.stopped && this.socket === ws;
+    const finish = () => {
+      if (finished || this.socket !== ws) return;
+      finished = true;
+      ws.onopen = ws.onmessage = ws.onerror = ws.onclose = null;
+      this.socket = undefined;
+      this.finishConnection = undefined;
+      this.reconnect();
+    };
+    this.finishConnection = finish;
     ws.onopen = () => {
+      if (!current() || failed || this.closeRequested) return;
       this.state = "Connected";
       this.connectedAt = Date.now();
       this.hearts.clear();
       this.generation++;
-      ws.send(
-        JSON.stringify({
-          type: "subscribe",
-          product_ids: pairs,
-          channels: ["ticker", "heartbeat"],
-        }),
-      );
+      try {
+        ws.send(
+          JSON.stringify({
+            type: "subscribe",
+            product_ids: pairs,
+            channels: ["ticker", "heartbeat"],
+          }),
+        );
+      } catch {
+        logger.warn("Coinbase WebSocket subscription failed");
+        this.closeSocket();
+      }
       this.notify();
     };
     ws.onmessage = (event) => {
+      if (!current() || failed || this.closeRequested) return;
       if (this.ingest(String(event.data))) {
         if (pairs.every((p) => this.fresh(p))) this.attempt = 0;
         this.notify();
       }
     };
-    ws.onerror = () => ws.close();
-    ws.onclose = () => {
-      if (this.stopped) return;
+    ws.onerror = () => {
+      if (!current() || failed) return;
+      failed = true;
       this.state = "Reconnecting";
-      this.metrics.reconnects++;
-      this.notify();
-      this.timer = setTimeout(
-        () => this.connect(),
-        Math.min(30000, 500 * 2 ** Math.min(this.attempt++, 6)) *
-          (0.75 + Math.random() * 0.5),
+      logger.warn(
+        "Coinbase WebSocket connection error; waiting for close before retrying",
       );
-      this.timer.unref();
+      this.notify();
+      // Never close from an error handler. Retain ownership until CLOSED.
+      if (ws.readyState === 3) finish();
     };
+    ws.onclose = finish;
   }
   stop() {
+    if (this.stopped) return;
     this.stopped = true;
     clearTimeout(this.timer);
     clearInterval(this.monitor);
-    this.socket?.close();
+    this.timer = undefined;
+    this.monitor = undefined;
+    if (this.socket) {
+      this.socket.onopen = this.socket.onmessage = this.socket.onerror = null;
+      this.closeSocket();
+    }
     this.state = "Data unavailable";
     this.notify();
   }
