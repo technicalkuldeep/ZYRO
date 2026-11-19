@@ -8,6 +8,8 @@ export default ts.config(
       "**/.next-qa6/**",
       "**/node_modules/**",
       "**/next-env.d.ts",
+      // Integrity-verified upstream artifacts; never rewrite generated WASM bindings.
+      "apps/web/public/zcash-wallet/engine/**",
     ],
   },
   js.configs.recommended,

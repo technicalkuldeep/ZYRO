@@ -1,0 +1,184 @@
+{
+  "checkedAt": "2026-11-19T16:31:34.142Z",
+  "branch": "feat/zyro-zcash-wallet-phase2",
+  "protected": {
+    "checkedAt": "2026-11-19T16:33:01.593Z",
+    "checkedFiles": 118,
+    "changed": []
+  },
+  "baseline": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "build": "passed",
+    "passed": 145,
+    "skipped": 43
+  },
+  "final": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "build": "passed",
+    "passed": 170,
+    "skipped": 43,
+    "mongoRound6Passed": 30,
+    "arenaBrowser": {
+      "checkedAt": "2026-11-19T16:15:43.518Z",
+      "database": "zyro_test_wallet_regression_b2d3ee19",
+      "liveFeed": true,
+      "googleOAuth": 302,
+      "session": 200,
+      "recovered": true,
+      "arenaStillRequiresLogin": true,
+      "passed": true
+    },
+    "anonymousEmbedded": {
+      "checkedAt": "2026-11-19T16:13:18.718Z",
+      "liveClaimsEnabled": false,
+      "addresses": [
+        "utest16xy9gnq7fs7smn64z8gcwa7wdn66trmllwxvtku0d2ytxqdeewmpz88m6y0xsfqglxdcwrsenwzevgu7cqgqlmhv7788u0vv0xn0sss20fumuke9pcegrgsu94gwy6xavad7h2e48ur7l2t0jccyhdy0nnhxqudgue0jwekv45fxc2cs",
+        "utest1grs8mss0rqu9dvtwkc3c8yqp77k7qnj5705e0m3qfknyluen8almyggnaepd8dcelaexs6q0w8m9lvyv5c5j7a4dyf9mnycpshk56qqy9z36lk26f7npyqrmywarwlknww8p8njqufg5d6s9twmk4e8mdzhgxme7537d8h87yqtrz6zg"
+      ],
+      "birthday": 4639731,
+      "restoreIdentity": true,
+      "encryptedPersistence": true,
+      "browserErrors": [],
+      "completed": true
+    },
+    "navigationMock": {
+      "checkedAt": "2026-11-19T16:31:40.043Z",
+      "mockedProvider": true,
+      "navigation": true,
+      "127.0.0.1": true,
+      "localhost": true,
+      "passed": true
+    },
+    "noirReal": {
+      "checkedAt": "2026-11-19T16:27:26.092Z",
+      "version": "1.0.41",
+      "network": "testnet",
+      "realExtension": true,
+      "authorization": true,
+      "silentRefresh": true,
+      "disconnect": true,
+      "rejection": true
+    }
+  },
+  "historicalTransfer": {
+    "txid": "3ddbfbede6ab2d522879a89eef1c6707a056dfc7a1ae2b6b523d1a5356ef7e93",
+    "minedHeight": 4639499,
+    "checkedChainHeight": 4639756,
+    "confirmations": 258,
+    "checkedAt": "2026-11-19T16:15:05.552Z",
+    "recipientObservation": "BLOCKED"
+  },
+  "freshClaim": "BLOCKED: current Turnstile human verification",
+  "externalFundedSend": "BLOCKED: QA wallet unfunded",
+  "v2Live": "UNVERIFIED",
+  "integrityArtifactsMatched": 8,
+  "npmProductionAudit": {
+    "total": 0
+  },
+  "license": {
+    "type": "BUSL-1.1",
+    "additionalUseGrant": "None",
+    "changeDate": "2029-01-01",
+    "production": "BLOCKED pending applicable rights"
+  },
+  "files": [
+    {
+      "path": "apps/web/app/testnet/page.tsx",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/app/wallet/testnet/api/transactions/[txid]/route.ts",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/components/zcash-wallet/noir-status.tsx",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/components/zcash-wallet/noir-transaction.tsx",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/components/zcash-wallet/testnet-entry.tsx",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/components/zcash-wallet/testnet-wallet.tsx",
+      "status": "modified"
+    },
+    {
+      "path": "apps/web/components/zcash-wallet/wallet.module.css",
+      "status": "modified"
+    },
+    {
+      "path": "apps/web/lib/zcash-wallet/client.ts",
+      "status": "modified"
+    },
+    {
+      "path": "apps/web/lib/zcash-wallet/external-send.ts",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/lib/zcash-wallet/lightwalletd.LICENSE",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/lib/zcash-wallet/lightwalletd.json",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/lib/zcash-wallet/noir.ts",
+      "status": "modified"
+    },
+    {
+      "path": "apps/web/lib/zcash-wallet/transaction-status.ts",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/lib/zcash-wallet/use-noir.ts",
+      "status": "new"
+    },
+    {
+      "path": "docs/evidence/zcash-wallet-phase2-completion.json",
+      "status": "new"
+    },
+    {
+      "path": "docs/zcash-wallet-phase2.md",
+      "status": "modified"
+    },
+    {
+      "path": "scripts/zcash-wallet-integration.ts",
+      "status": "new"
+    },
+    {
+      "path": "tests/zcash-wallet/client-lifecycle.test.ts",
+      "status": "new"
+    },
+    {
+      "path": "tests/zcash-wallet/discovery.test.ts",
+      "status": "new"
+    },
+    {
+      "path": "tests/zcash-wallet/external-send.test.ts",
+      "status": "new"
+    },
+    {
+      "path": "tests/zcash-wallet/transaction-status.test.ts",
+      "status": "new"
+    },
+    {
+      "path": "apps/web/next.config.ts",
+      "status": "modified"
+    },
+    {
+      "path": "apps/web/package.json",
+      "status": "modified"
+    },
+    {
+      "path": "package-lock.json",
+      "status": "modified"
+    }
+  ]
+}
