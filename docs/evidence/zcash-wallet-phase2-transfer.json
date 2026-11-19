@@ -1,0 +1,24 @@
+{
+  "txid": "3ddbfbede6ab2d522879a89eef1c6707a056dfc7a1ae2b6b523d1a5356ef7e93",
+  "provider": "lightwalletd",
+  "network": "testnet",
+  "reportedChain": "test",
+  "confirmations": 15,
+  "state": "CONFIRMED",
+  "checkedAt": "2026-11-19T14:30:51.247Z",
+  "blockhash": "000003d22200941c7e8b0e525a2c8a5fdee85a87cefb6202440e8d40467c6091",
+  "minedHeight": 4639499,
+  "chainHeight": 4639513,
+  "decoded": {
+    "txid": "3ddbfbede6ab2d522879a89eef1c6707a056dfc7a1ae2b6b523d1a5356ef7e93",
+    "transparentInputs": 0,
+    "transparentOutputs": 0,
+    "saplingOutputs": 0,
+    "orchardActions": 0,
+    "ironwoodActions": 5,
+    "decodedBy": "librustzcash eb38d7a373661179dbc083a2fd58b3a6c9b25818",
+    "consensusProofsVerified": false
+  },
+  "fundingVerified": false,
+  "notice": "Transaction bytes decoded and txid checked with librustzcash; inclusion and confirmations reported by a remote lightwallet service. No recipient, amount or market funding proof."
+}

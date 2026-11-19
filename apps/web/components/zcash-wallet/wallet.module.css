@@ -1,0 +1,476 @@
+/* Palette and typography follow brand.md. Every selector is wallet-local. */
+.wallet.entry {
+  min-height: 0;
+  padding: 24px 0;
+}
+.wallet {
+  --w-bg: #0b0f0e;
+  --w-panel: #131a17;
+  --w-border: #2a3731;
+  --w-text: #f0f3ed;
+  --w-muted: #a5b4ab;
+  --w-jade: #b5f477;
+  color: var(--w-text);
+  background: var(--w-bg);
+  max-width: 1184px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  min-height: 80vh;
+  font-family: Arial, sans-serif;
+}
+.wallet * {
+  box-sizing: border-box;
+}
+.wallet button,
+.wallet .actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 12px 20px;
+  border: 1px solid var(--w-border);
+  border-radius: 8px;
+  background: var(--w-panel);
+  color: var(--w-text);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.wallet button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.wallet :is(button, a, input, textarea):focus-visible {
+  outline: 2px solid var(--w-jade);
+  outline-offset: 4px;
+}
+.wallet button:hover:enabled {
+  border-color: var(--w-jade);
+}
+.wallet .primary {
+  background: var(--w-jade);
+  color: var(--w-bg);
+  border-color: var(--w-jade);
+  font-weight: 600;
+}
+.wallet .textButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  padding: 12px 0;
+  color: var(--w-muted);
+  font-size: 14px;
+  text-decoration: none;
+  min-height: 44px;
+}
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--w-border);
+}
+.wordmark {
+  font-size: 24px;
+  letter-spacing: -1px;
+  font-weight: 800;
+  color: var(--w-text);
+  text-decoration: none;
+}
+.wordmark span {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--w-muted);
+  letter-spacing: 0;
+  margin-left: 12px;
+}
+.network {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--w-jade);
+  font-size: 12px;
+}
+.network > span {
+  height: 6px;
+  width: 6px;
+  border-radius: 50%;
+  background: var(--w-jade);
+}
+.intro {
+  padding: 56px 0 40px;
+}
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: var(--w-muted);
+}
+.wallet h1 {
+  font-size: clamp(40px, 6vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -3px;
+  margin: 20px 0;
+}
+.wallet h1 em {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  color: var(--w-jade);
+}
+.wallet p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--w-muted);
+  margin: 12px 0 20px;
+  max-width: 64ch;
+}
+.wallet h2 {
+  font-size: 24px;
+  letter-spacing: -0.6px;
+  margin: 16px 0 12px;
+  font-weight: 500;
+}
+.wallet h3 {
+  font-size: 18px;
+  line-height: 1.45;
+  font-weight: 500;
+}
+.landing {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 48px;
+}
+.panel {
+  border: 1px solid var(--w-border);
+  background: var(--w-panel);
+  border-radius: 16px;
+  padding: 32px;
+  min-width: 0;
+  margin-bottom: 24px;
+}
+.panel > svg {
+  color: var(--w-jade);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0;
+}
+.details {
+  padding: 16px 32px;
+}
+.largeGlyph {
+  display: block;
+  font:
+    italic 96px Georgia,
+    serif;
+  color: var(--w-jade);
+  line-height: 1;
+}
+.wallet .fine,
+.wallet small {
+  color: var(--w-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.wallet small {
+  display: block;
+}
+.formPanel {
+  max-width: 680px;
+}
+.wallet form {
+  display: grid;
+  gap: 20px;
+  margin-top: 24px;
+}
+.wallet label {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+}
+.wallet :is(input, textarea) {
+  background: var(--w-bg);
+  border: 1px solid #52665a;
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--w-text);
+  font: inherit;
+  width: 100%;
+  min-height: 44px;
+}
+.wallet textarea {
+  resize: vertical;
+}
+.wallet .checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  line-height: 1.6;
+  margin: 24px 0;
+}
+.checkbox input {
+  width: 20px;
+  min-height: 20px;
+  height: 20px;
+  accent-color: var(--w-jade);
+  flex: none;
+}
+.error {
+  padding: 20px 24px;
+  border: 1px solid #c27575;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  background: #281d1c;
+}
+.error p {
+  color: #f0c5bf;
+}
+.notice {
+  padding: 20px 24px;
+  border: 1px solid var(--w-border);
+  border-radius: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+}
+.notice small {
+  width: 100%;
+}
+.notice strong {
+  color: var(--w-jade);
+}
+.pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--w-jade);
+}
+.overview {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 0 32px;
+  border-bottom: 1px solid var(--w-border);
+}
+.shortAddress {
+  font: 16px monospace !important;
+  color: var(--w-text) !important;
+  overflow-wrap: anywhere;
+}
+.sync {
+  text-align: right;
+}
+.sync strong {
+  display: block;
+  color: var(--w-jade);
+}
+.sync button {
+  margin-top: 12px;
+}
+.balances {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+.balance {
+  border: 1px solid var(--w-border);
+  border-radius: 12px;
+  background: var(--w-panel);
+  padding: 24px;
+}
+.balance > span {
+  display: block;
+  color: var(--w-muted);
+  font-size: 12px;
+}
+.balance strong {
+  display: block;
+  font: clamp(18px, 2.6vw, 32px) monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+  margin: 20px 0 8px;
+  overflow-wrap: anywhere;
+}
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 32px;
+}
+.address {
+  font: 12px/1.8 monospace !important;
+  word-break: break-all;
+  color: var(--w-text) !important;
+  max-width: 100% !important;
+}
+.qr {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 24px 0;
+  border-radius: 8px;
+  background: white;
+}
+.receipt {
+  padding-top: 24px;
+  border-top: 1px solid var(--w-border);
+  margin-top: 24px;
+}
+.receipt code {
+  display: block;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  margin: 8px 0 16px;
+}
+.backup {
+  border-color: var(--w-jade);
+  margin-top: 24px;
+}
+.backup ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+}
+.backup li {
+  font: 14px monospace;
+  background: var(--w-bg);
+  padding: 12px;
+  border-radius: 6px;
+}
+.backup li span {
+  color: var(--w-muted);
+  font-size: 11px;
+  margin-right: 8px;
+}
+.confirm dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  font-size: 14px;
+}
+.confirm dd {
+  margin: 0;
+  text-align: right;
+  font-family: monospace;
+}
+.confirm dt {
+  color: var(--w-muted);
+}
+.empty {
+  padding: 40px 0;
+  text-align: center;
+}
+.empty > svg {
+  color: var(--w-jade);
+}
+.empty p {
+  margin: 12px auto;
+}
+.history {
+  list-style: none;
+  padding: 0;
+}
+.history li {
+  border-top: 1px solid var(--w-border);
+  padding: 20px 0;
+  display: grid;
+  gap: 8px;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--w-muted);
+  font-size: 12px;
+  border-top: 1px solid var(--w-border);
+  margin-top: 40px;
+  padding-top: 24px;
+}
+.footer span {
+  margin-left: auto;
+}
+@media (max-width: 760px) {
+  .wallet {
+    padding: 24px 16px 40px;
+  }
+  .landing,
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .details {
+    padding: 8px;
+  }
+  .panel {
+    padding: 24px;
+  }
+  .balances {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .balance strong {
+    font-size: 28px;
+  }
+  .overview {
+    flex-direction: column;
+  }
+  .sync {
+    text-align: left;
+  }
+  .intro {
+    padding-top: 40px;
+  }
+  .backup ol {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .network {
+    font-size: 10px;
+  }
+  .wordmark span {
+    display: none;
+  }
+  .footer span {
+    margin-left: 0;
+  }
+  .confirm dl {
+    grid-template-columns: 1fr;
+  }
+  .confirm dd {
+    text-align: left;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .wallet button,
+  .wallet a {
+    transition:
+      border-color 120ms ease,
+      background-color 120ms ease;
+  }
+  .intro {
+    animation: walletReveal 200ms ease-out;
+  }
+  @keyframes walletReveal {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

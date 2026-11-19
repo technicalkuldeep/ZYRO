@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-11-19T14:19:48.691Z",
+  "liveClaimsEnabled": true,
+  "addresses": [
+    "utest1ek3ufnghm8tcn2gpuvm355xkp80rhwaenarc2gdqrvjc93g6xu02hn7hqcxda3gtezqj6v603a7tffgqc9sne24dwldcngatwhrgdale2emjqgd0s0tl45lnvsajha3sep9l8h9hcvurjcuk9wqyuakx7t0klnnahrmx8jeulyc228q4",
+    "utest1wpj6z2muxtc4rvwknvchu9utczuz65q7gt9qzzsug0l008fe8cttalxy34wv7rv2v54eny8l5gm32fcph5mx65zt6w03rgds9dp2jr9w2vz40qjtl25hrcfnn3h6qq79q0muk5nvxy3mslx92u2l2wl06ext849gas02y7l6xvnmdyx3"
+  ],
+  "birthday": 4639473,
+  "restoreIdentity": true,
+  "encryptedPersistence": true,
+  "faucetReceipt": [
+    {
+      "request_id": "2bc45f41-2ca0-4600-914e-b28a54d8d1a4",
+      "network": "testnet",
+      "state": "confirmed",
+      "outcome": "accepted",
+      "txid": "9edc565516b23c73eb2b3df7cb52355383bdae57944f187c420a2be460e581be",
+      "confirmed_height": 4639494
+    }
+  ],
+  "submitted": true,
+  "completed": false,
+  "error": "locator.innerText: Timeout 120000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('Confirmed Balance', { exact: true }).locator('..').locator('strong')\u001b[22m\n"
+}

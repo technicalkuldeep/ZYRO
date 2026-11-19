@@ -1,0 +1,488 @@
+{
+  "branch": "feat/zyro-zcash-wallet-phase2",
+  "initialWorkingTree": "clean",
+  "initialDiffBytes": 0,
+  "baseline": {
+    "lint": "passed",
+    "typecheck": "passed",
+    "build": "passed",
+    "tests": {
+      "passed": 101,
+      "skipped": 43
+    }
+  },
+  "files": [
+    {
+      "path": "tests/zcash.test.ts",
+      "sha256": "C9CA9A5F6FE6B64385779EA735DEB70410E8A1938FB21B49C05480ED620CDCC9"
+    },
+    {
+      "path": "tests/rpc-transport.test.ts",
+      "sha256": "64D76A4A761552FDE9A21CD602D6F08363281A2990030DC3952446848D150ED2"
+    },
+    {
+      "path": "tests/resolution.test.ts",
+      "sha256": "460F0D5E55AEE88E7CA92C90F0CECED24B9EB85A661A404565C45ABD0B181F34"
+    },
+    {
+      "path": "tests/postgres.test.ts",
+      "sha256": "EE5E44C3886135E5B09325D050BDFDE1AAB7FBBEC6E3B0AED51EF9BF8EB6A7FA"
+    },
+    {
+      "path": "tests/live-testnet.test.ts",
+      "sha256": "647CFCEAD49940A97B6CFD2D4A75B9216E268297B49E09429CD4AEEC5803A9CC"
+    },
+    {
+      "path": "tests/live-prices.test.ts",
+      "sha256": "17A72BAE16DE9831DEA8BC5DA0005B76A4F0CA270D0B52B998049ECE0B531F3F"
+    },
+    {
+      "path": "tests/lightwallet.test.ts",
+      "sha256": "B0A97FE674EF4D3CDE4432567AC55CD9C4676BB2510E03B282501266F133AA3C"
+    },
+    {
+      "path": "tests/funding.test.ts",
+      "sha256": "D4874BDD0518792661F008D5CA8680032BD50A184BF1F1F9703DB8EAB4D76303"
+    },
+    {
+      "path": "tests/fast-crypto.test.ts",
+      "sha256": "5DCE4627BD9C473068AE5AC97C1C9E9C520DA3A41032019E0401FD827E4536DC"
+    },
+    {
+      "path": "tests/engine.test.ts",
+      "sha256": "7E06EFC4D45CCFCC650569279B65C52D39C9B9D146CE39A8EB7C61C5D98A1A1A"
+    },
+    {
+      "path": "tests/demo-wallet.test.ts",
+      "sha256": "957E63E762591CA717FAFB77480431F5F1D649D13F2E4EF03D74672100A0AF14"
+    },
+    {
+      "path": "tests/arena-games.test.ts",
+      "sha256": "B9CB661371730970AD9CDEBCD80CFFCD232B03B32961C70089F421D27C140041"
+    },
+    {
+      "path": "tests/arena-expansion.test.ts",
+      "sha256": "406748BD5AF3F7B5600AF625F88B09A374DFDFC4D9739C80372D529A68EE67A0"
+    },
+    {
+      "path": "tests/accounts.test.ts",
+      "sha256": "0AD229181CCE3A49288B48EAFD050E7453C663291B5BEBEA2BEAD5699C09D8E9"
+    },
+    {
+      "path": "apps/api/tsconfig.json",
+      "sha256": "74B324E3509FBDF6F7BC7265B6019E95C1FFCC580471FACC850C6B82B9734461"
+    },
+    {
+      "path": "packages/shared/src/index.ts",
+      "sha256": "125775BD18CC2D85C869FDD00A39D572FF0BB518B01AD52569A23AC00388BFD5"
+    },
+    {
+      "path": "packages/shared/src/arena-games.ts",
+      "sha256": "1F4BF4F6FB97F3F0A12F413A144B7A2CA816E6F662B08F236CAFCB0898DFB660"
+    },
+    {
+      "path": "apps/web/tsconfig.json",
+      "sha256": "99A81351634FF554809A3264EC5BC44007A98C70972F9FD78918A8E72DE57A58"
+    },
+    {
+      "path": "packages/shared/package.json",
+      "sha256": "100C02E812D22162406302114D6020DA97B232955D6FF313402734BD48B4E88F"
+    },
+    {
+      "path": "apps/web/proxy.ts",
+      "sha256": "F33A6BAFF7319579BD3D7378C6015F6C324560CC7DE1D4F30088E9D3FE318659"
+    },
+    {
+      "path": "apps/web/postcss.config.mjs",
+      "sha256": "A1A188221F064D964DD9958C3D48B0C23252FABBEB6099D95EE8E15C764718B0"
+    },
+    {
+      "path": "services/zcash/compatibility-probe.rs",
+      "sha256": "78EF2F179BB4A3B4221EDD37E3B7DB4D1C0AF3D935A36DEB7076C820A2E56D2C"
+    },
+    {
+      "path": "services/zcash/Cargo.toml",
+      "sha256": "37EAA5024FB34129E31099F6C1EC1FC19856EF7D753BF79533C4AD1F39740781"
+    },
+    {
+      "path": "services/zcash/Cargo.lock",
+      "sha256": "A85BA36BDD4317768ED05921D79CFB11A8880C949F66409AE4A5E4629C1CCE2F"
+    },
+    {
+      "path": "services/zcash/README.md",
+      "sha256": "818A9E17A47EF888338A38118B93925F5CDE5A90E4305FDF6E11D9467E279AA5"
+    },
+    {
+      "path": "apps/api/src/zcash.ts",
+      "sha256": "0DCD7859DD78393AC0C3DC63970D453CBFA15947ED7948F6B1934FDE7413234E"
+    },
+    {
+      "path": "apps/api/src/transaction-monitor.ts",
+      "sha256": "647C51C30A6E46936D1390EC35EF74F850D22D854B75C02DCE7AD79756409936"
+    },
+    {
+      "path": "apps/api/src/transaction-inspector.ts",
+      "sha256": "D60BDCE06C846A420E72D111F411A9ED1D2D68FCBCCC17721EEDF16B216A8514"
+    },
+    {
+      "path": "apps/api/src/store.ts",
+      "sha256": "E32990B3CBE6099B96381F17908B0908FB9122345A2EB8393A6D7DA374682350"
+    },
+    {
+      "path": "apps/api/src/server.ts",
+      "sha256": "4A5A13BC1676EEDB02118186DA581707FF9C00E03983A47354EF824460D0E12F"
+    },
+    {
+      "path": "apps/api/src/schema.ts",
+      "sha256": "15EBB661F26DF3D148A21D9A5E8DA0A26ABC9B5B772A84C6C4E3F3F9740386AE"
+    },
+    {
+      "path": "apps/api/src/resolution.ts",
+      "sha256": "D035E3E2A936A9266CED3164DFE595EDBD5B38E96233DC520AC25078C890ED11"
+    },
+    {
+      "path": "apps/api/src/price-provider.ts",
+      "sha256": "F46478491C422F30352B38E5EE9E6BB4ABFE58B1C7F7F692B4D06D18330397E0"
+    },
+    {
+      "path": "apps/api/src/policy.ts",
+      "sha256": "79FC90BD3A2E888BE80CB04AD53EE678954D0F238580B778A836502371FC685E"
+    },
+    {
+      "path": "apps/api/src/live-prices.ts",
+      "sha256": "5A3B92D019319BCBFB461DD0AEC18BDF097A17BB13083FEF8D8AFF586D089CA8"
+    },
+    {
+      "path": "apps/api/src/lightwallet.ts",
+      "sha256": "53FA2566D75486099D23AFB97615309C37B4FED8C120E1633DC4680FCE5804A9"
+    },
+    {
+      "path": "apps/api/src/game-random.ts",
+      "sha256": "F638B0D898035E530A7477705A52AB497D33E7517683BB1B74B31AF1ABC71109"
+    },
+    {
+      "path": "apps/api/src/funding.ts",
+      "sha256": "B2D17CFA491A1807959D7D602EEE9C406CB43B06372923FB387E86C42311EB3C"
+    },
+    {
+      "path": "apps/api/src/fast-crypto.ts",
+      "sha256": "D467C8645EC4675299D76B445845ADE4514919A16124AA6A695D5A1BDEE31655"
+    },
+    {
+      "path": "apps/api/src/engine.ts",
+      "sha256": "DEF66075BD426B92CCBA74830C44C21261BAB49F345C92F97C0AD5D8FFBD7304"
+    },
+    {
+      "path": "apps/api/src/demo-wallet.ts",
+      "sha256": "7D0123F28E90AF30D1FE0F23D053E6288C9A4001DF082981D8508A9EB5B56C49"
+    },
+    {
+      "path": "apps/api/src/crypto-markets.ts",
+      "sha256": "679334C245D28FE409430ECFD09A511818476755F5177BF0F8F81D94C851F965"
+    },
+    {
+      "path": "apps/api/src/arena-services.ts",
+      "sha256": "4F358663E34385725A6E55E9513971E337F4B010C47CFBD40BBC1E46095C1F60"
+    },
+    {
+      "path": "apps/api/src/arena-games.ts",
+      "sha256": "55748243D8357C202C2EE835B4870D4B26F6DA7EDD652E6173CD4F36BEF04E9A"
+    },
+    {
+      "path": "apps/api/src/app.ts",
+      "sha256": "89F285AA47481772C1BCE86C8B26BEEA7C10320A35822C75D8764E185277D796"
+    },
+    {
+      "path": "apps/api/src/accounts.ts",
+      "sha256": "EF055DFF9AE0948EF836D2A9A522B9C559D9F5188D0434C8A0E9A37AD072A948"
+    },
+    {
+      "path": "apps/api/src/account-routes.ts",
+      "sha256": "8C564A5589F4D62B7D79B3A05C3D3E995F4320CDA40F58649DD8391FB300878B"
+    },
+    {
+      "path": "apps/api/package.json",
+      "sha256": "590260D79E65CBAFE72247281CDD1D28B8407867005A150A2896A39BD13B3358"
+    },
+    {
+      "path": "apps/api/migrations/0000_records.sql",
+      "sha256": "D3FED6E25253F626574C091CBE4A37A6CEC371CE6B10CA52422A3442AC6A982F"
+    },
+    {
+      "path": "apps/web/AGENTS.md",
+      "sha256": "063098F6CB31BB44C6F8FBEA25B3876DE7EE1E5F7D00A50DBAB506F6415EB7F0"
+    },
+    {
+      "path": "services/zcash/src/main.rs",
+      "sha256": "ACF450222CFE9DAE2339C521161ACF553A017893FA9309E670F6F2C7499DB7F8"
+    },
+    {
+      "path": "services/zcash/transaction-inspect/Cargo.toml",
+      "sha256": "4DE95149283F5AE6AD3874C559C2FC83BDD592E201210334FFC124E23D53B708"
+    },
+    {
+      "path": "services/zcash/transaction-inspect/Cargo.lock",
+      "sha256": "25A3AA1E31D1F429353AD503080E3CEE1516E5D7488C15D9E3F440D048FF7DE1"
+    },
+    {
+      "path": "apps/web/components/wallet-observer.tsx",
+      "sha256": "42ED87DAF9BFB436A5F1E7D62597C8F827BE3B3EBE3625A19038223C39E78042"
+    },
+    {
+      "path": "services/zcash/proto/service.proto",
+      "sha256": "B8F89F08BFB4F39E4AAFF0C4C1C770833E178BD6141A58C83C667A50404B65D2"
+    },
+    {
+      "path": "services/zcash/proto/README.md",
+      "sha256": "0FFACB85D1193245719F90ED5A59B6960D43B739ACBC92872F5D372ED79E9EED"
+    },
+    {
+      "path": "services/zcash/proto/LICENSE",
+      "sha256": "5663292AE13914B2109526FCA28287A7E6AAB86F98A576028F8F39CD1F72485F"
+    },
+    {
+      "path": "services/zcash/proto/compact_formats.proto",
+      "sha256": "99AEDC6AEAB7249175F86080CE52AB5CC4F0EE8DD83DE2635AE8AD79E31F6969"
+    },
+    {
+      "path": "apps/web/components/fast-crypto.tsx",
+      "sha256": "1AC7EA3A88C77800B32A41B518DEE2F2399EC8BD6D659DACD376214BFE84F24C"
+    },
+    {
+      "path": "apps/web/components/data.tsx",
+      "sha256": "89E76D326A2B3795A360696E9F7E6AC16A161D31A9424F1B5A41F2702D71B8E0"
+    },
+    {
+      "path": "apps/web/components/crypto-experience.tsx",
+      "sha256": "20725851CDA9930B0BE12D011254790418B5C45CA113D0EF21969318E13C8BE9"
+    },
+    {
+      "path": "apps/web/components/auth.tsx",
+      "sha256": "F92F1B7DDDEED3B360C7A31C4CB8099035B5C198A3FB8166152695DFEFC23C63"
+    },
+    {
+      "path": "apps/web/components/arena-product.tsx",
+      "sha256": "B2C9685974D322A187AE141A0B2A93129B45D5BA680F3C457011FAC06AF4FACE"
+    },
+    {
+      "path": "apps/web/components/arena-hub.tsx",
+      "sha256": "FC13B2A730FBB4D62CFA3DC80715938EB66881CE5D8ADA846D7232DC3C003D5D"
+    },
+    {
+      "path": "apps/web/components/admin-product.tsx",
+      "sha256": "DD7BED917E1F6DD6681C49DE60EEA768E92A9F16F90D177BA5ED8EAE49949841"
+    },
+    {
+      "path": "apps/web/components/admin-arena.tsx",
+      "sha256": "D7A8002234FC251F75D11BF287151BCA29C1D95572BB1F3AD357760D832E1917"
+    },
+    {
+      "path": "apps/web/components/access.tsx",
+      "sha256": "DF4FFD1107DB2B8FBC0BE6359F12D327062B0B5FA04A0ACF0052CE59DB6C9418"
+    },
+    {
+      "path": "apps/web/components/live-crypto-chart.tsx",
+      "sha256": "06849C4926EC58E77300A075975D29B204CC171506A33C3EA94796D62181D7D4"
+    },
+    {
+      "path": "apps/web/components/hero-visual.tsx",
+      "sha256": "D783CA8B9D5912FA8A2AD68D9F6EF643A713D251FACD420F894187C0960B9DF5"
+    },
+    {
+      "path": "apps/web/components/game-art.tsx",
+      "sha256": "BD7103D37AE599246ADEBE7B5D83DC20C8F78401DBFE5F4B095B419FC1643D2A"
+    },
+    {
+      "path": "apps/web/components/featured-predictions.tsx",
+      "sha256": "6A5FCE923F1F5459FFE320CF7143E9BBF5DD398680872E8C08D432CD5B6EB560"
+    },
+    {
+      "path": "apps/web/components/markets.tsx",
+      "sha256": "50FE3CB2821758884507163678AFDF8528F0FC2D5BB22E36065828254DC1FABF"
+    },
+    {
+      "path": "apps/web/components/market-funding.tsx",
+      "sha256": "477131832B8FDA5FFA0D3704750994F87FDA4369D27CD2CDE87C5D82D5F66F1E"
+    },
+    {
+      "path": "apps/web/components/quick-game.tsx",
+      "sha256": "05FD166E3BE628F034A8B7D7D19D017E6D6238BDFCC59490A8FC8ACD7184AF6A"
+    },
+    {
+      "path": "apps/web/components/shell.tsx",
+      "sha256": "CD716AF66A614B61BD2D16115454E70C727186660B66B01133FA95FC99BCA123"
+    },
+    {
+      "path": "services/zcash/transaction-inspect/src/main.rs",
+      "sha256": "3F2359A63CA082F3F794331E412C44E9F0350AD8BAE3DE60C17B9D2392D18F22"
+    },
+    {
+      "path": "apps/web/components/ui/button.tsx",
+      "sha256": "75D281244315D65568B2A3442A13BB2002B17B9FFAFCE68DDFFA11FC17FDEB11"
+    },
+    {
+      "path": "apps/web/app/globals.css",
+      "sha256": "BE8F827B34EFAD2AC0E11286265CEF180B995F7CEC14D807D4EC7E15B5B15ECF"
+    },
+    {
+      "path": "apps/web/app/fast-crypto.css",
+      "sha256": "3304379DA7AF7286ED9ABB6F3A531179710FFD56B9E11E59E02218ECD6BAA9AE"
+    },
+    {
+      "path": "apps/web/app/error.tsx",
+      "sha256": "5E9C81487E7D0CBCC5A8820A9340FDAFD7A0D7C8BA14A2C417FEC642FC0C841A"
+    },
+    {
+      "path": "services/zcash/transaction-inspect/src/bin/zyro-pczt-inspect.rs",
+      "sha256": "6F2FFAC60F6EE1EE71A71F24F1D1F0713DCEC30892BEFD9CA985CD25ACEA39FD"
+    },
+    {
+      "path": "services/zcash/transaction-inspect/tests/fixtures/README.md",
+      "sha256": "290EF99AEE595357C55759F8D7C1F02395479C415AAB094BA425DE56647AABB2"
+    },
+    {
+      "path": "services/zcash/transaction-inspect/tests/fixtures/LICENSE-MIT",
+      "sha256": "98D9B258286878D02C2EE7357415B407477F5C607C86517F9F4ED550CBD68C71"
+    },
+    {
+      "path": "services/zcash/transaction-inspect/tests/fixtures/ironwood_v6.pczt",
+      "sha256": "2B8A861ABA7FE7CC55F6989000DE8665DD8162BFEA41B036C86D8D070ABD5BCF"
+    },
+    {
+      "path": "apps/web/app/arena-expansion.css",
+      "sha256": "CB904AAB667E5044FB5494CC548FEAA6A61EE8C4863263480DF6F6628F855FF7"
+    },
+    {
+      "path": "apps/web/app/wallet/page.tsx",
+      "sha256": "E9718D1FAF56CD06B4FB4EB6ED459E084E2CFED146FDB8D8D89C743A580C1B5A"
+    },
+    {
+      "path": "apps/web/app/dashboard/page.tsx",
+      "sha256": "822560CF1B60DBBE464B0CE40D234839EB5E130ACE2F2FF4C25E23B3E43B354C"
+    },
+    {
+      "path": "apps/web/app/admin/audit/page.tsx",
+      "sha256": "11F069130B32016874EA2353EDC63C8F292FA0E44D7E41A5F89F82A9B7621D27"
+    },
+    {
+      "path": "apps/web/app/signin/page.tsx",
+      "sha256": "7BEE90325A5005DEFF73A52A43362BFCE8EE645615CBA05E159A0D20311563A6"
+    },
+    {
+      "path": "apps/web/app/create/page.tsx",
+      "sha256": "353238726FC8D274E52C51298007A4F97B51093A58E5BC819FCBEBC2B1188CD2"
+    },
+    {
+      "path": "apps/web/app/admin/arena/page.tsx",
+      "sha256": "817A20E4236999A75670066FC29F32209E45FF325DD6C27E906E1168BE66926F"
+    },
+    {
+      "path": "apps/web/app/privacy/page.tsx",
+      "sha256": "E2977E5120C2C57B042BC0A2D913C4A72A96A63DC6E2049E0B5503ADA062928B"
+    },
+    {
+      "path": "apps/web/app/premium.css",
+      "sha256": "3B6849E8C4E8D6F62D2EDD98171659ABEE92EE47B37BE2100A2AD74F99B62551"
+    },
+    {
+      "path": "apps/web/app/page.tsx",
+      "sha256": "E04DA7A29E4692891E17690CFFEBBF05A87D12574D67364A3ADD6F74F3424602"
+    },
+    {
+      "path": "apps/web/app/not-found.tsx",
+      "sha256": "852EF20698B7C00937EBFBD37DEF18E1F79F662514761F89FBD1840ED428782A"
+    },
+    {
+      "path": "apps/web/app/admin/users/[id]/page.tsx",
+      "sha256": "83D04C23B6C2D69D7FCFFFD3E5EB3FAF41134EEC52D2022685478167D49409A0"
+    },
+    {
+      "path": "apps/web/app/admin/users/page.tsx",
+      "sha256": "11F069130B32016874EA2353EDC63C8F292FA0E44D7E41A5F89F82A9B7621D27"
+    },
+    {
+      "path": "apps/web/app/admin/page.tsx",
+      "sha256": "22B748C9E6F304D8F392790F7FE6453A0DF0597727571E4B000C5D3016C3346B"
+    },
+    {
+      "path": "apps/web/app/admin/layout.tsx",
+      "sha256": "9EF3935A8CC16B40CE49D784748D2D108502A1B633779A81E43E5017A7093AC7"
+    },
+    {
+      "path": "apps/web/app/arena/profile/page.tsx",
+      "sha256": "3E4A360EDF7C288BD75C72BC63164E54392F91E6E6D07DECF7FCA9CEAF458436"
+    },
+    {
+      "path": "apps/web/app/arena/page.tsx",
+      "sha256": "9513BC8EEAC2F2FA7C88D0CAB10BE5A9D7F6C267243A4D9A4F970012E74D971C"
+    },
+    {
+      "path": "apps/web/app/arena/history/page.tsx",
+      "sha256": "3E4A360EDF7C288BD75C72BC63164E54392F91E6E6D07DECF7FCA9CEAF458436"
+    },
+    {
+      "path": "apps/web/app/choose/page.tsx",
+      "sha256": "B7F2D348B6275C54361CB3294E6E2977129DC068C797AFBA5D61BBDAAB03389A"
+    },
+    {
+      "path": "apps/web/app/choose/layout.tsx",
+      "sha256": "1D4E33C301E8AC63D13A573EC35A1F59C1C65203DEC40A6EB38C818D7C7A3236"
+    },
+    {
+      "path": "apps/web/app/layout.tsx",
+      "sha256": "976E0CC16C175A2FD6168496FDE4B6AEE56CF369F37731588EF412BB9874C9B3"
+    },
+    {
+      "path": "apps/web/app/loading.tsx",
+      "sha256": "84E99E1AE63E83A8E113AD9EF2BECD1FFF7505A254E949F570E3960FF26F0E21"
+    },
+    {
+      "path": "apps/web/app/arena/leaderboard/page.tsx",
+      "sha256": "3E4A360EDF7C288BD75C72BC63164E54392F91E6E6D07DECF7FCA9CEAF458436"
+    },
+    {
+      "path": "apps/web/app/arena/layout.tsx",
+      "sha256": "1D4E33C301E8AC63D13A573EC35A1F59C1C65203DEC40A6EB38C818D7C7A3236"
+    },
+    {
+      "path": "apps/web/app/about/page.tsx",
+      "sha256": "48DC3B355DF3845A381AE2FED57D9B2927086F2227D6F570464B8DEF545829E2"
+    },
+    {
+      "path": "apps/web/app/arena/bot/page.tsx",
+      "sha256": "C1B8A3CB77A87FEB1A2FE1674D024428AE5EC96CFB993C613662A990963802C3"
+    },
+    {
+      "path": "apps/web/app/markets/page.tsx",
+      "sha256": "74766CDC4AA71DDCF086E664A011C6C2C2B99C85012E7552F292FE8A4ED675FC"
+    },
+    {
+      "path": "apps/web/app/arena/games/page.tsx",
+      "sha256": "3E4A360EDF7C288BD75C72BC63164E54392F91E6E6D07DECF7FCA9CEAF458436"
+    },
+    {
+      "path": "apps/web/app/arena/crypto/page.tsx",
+      "sha256": "C1B8A3CB77A87FEB1A2FE1674D024428AE5EC96CFB993C613662A990963802C3"
+    },
+    {
+      "path": "apps/web/app/markets/[id]/page.tsx",
+      "sha256": "480618D953B36326FAE8C7FEFCD945FB84A877D5BFDCD0DB80A34C039290FFEA"
+    },
+    {
+      "path": "apps/web/app/arena/crypto/[id]/page.tsx",
+      "sha256": "D6308B1E5CCA5B0E87DC924876BF2F7D1EE3890FB66295A16E5F30C5D93E4F5C"
+    },
+    {
+      "path": "apps/web/app/arena/games/[key]/page.tsx",
+      "sha256": "D6308B1E5CCA5B0E87DC924876BF2F7D1EE3890FB66295A16E5F30C5D93E4F5C"
+    },
+    {
+      "path": "apps/web/app/arena/games/quick-draw/page.tsx",
+      "sha256": "6759371CFAA793667148CBAAEEC6315E1AA4188F8BEAA3DEDE07FBC98541822C"
+    },
+    {
+      "path": "apps/web/app/arena/crypto/fast/page.tsx",
+      "sha256": "7B4AA7E63749D8A502526863BC05861601D37AF1179928336BAAD29C09B51988"
+    }
+  ]
+}
