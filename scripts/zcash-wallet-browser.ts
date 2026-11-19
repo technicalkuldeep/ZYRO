@@ -23,13 +23,16 @@ async function create(page: Page) {
   if (page.url().includes("signin"))
     throw Error("Anonymous wallet redirected to sign-in");
   await page
-    .getByRole("button", { name: "Create Testnet Wallet", exact: true })
+    .getByRole("button", { name: "Create New Wallet", exact: true })
     .click();
   await page.getByLabel("New wallet password", { exact: true }).fill(password);
   await page.getByLabel("Confirm password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Create encrypted wallet" }).click();
   await page.getByRole("heading", { name: "Back up your wallet" }).waitFor();
   // Keep phrase in test memory only. It never appears in logs or artifacts.
+  await page
+    .getByRole("button", { name: "Show Recovery Phrase", exact: true })
+    .click();
   const phrase = await page
     .locator("ol li")
     .evaluateAll((nodes) =>
@@ -38,25 +41,30 @@ async function create(page: Page) {
   const birthdayText = await page.getByText("Wallet birthday:").innerText();
   testSecrets.add(phrase);
   const birthday = Number(birthdayText.match(/birthday:\s*(\d+)/)?.[1]);
-  const address = await page
-    .locator("#wallet-receive p")
-    .filter({ hasText: /^utest1/ })
-    .innerText();
+  await page
+    .getByRole("button", { name: "Hide Recovery Phrase", exact: true })
+    .click();
   await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "I saved my backup" }).click();
   await page.getByText("Synced", { exact: true }).waitFor();
-  console.log("CREATED_AND_SYNCED", address);
+  await page.getByRole("button", { name: "Receive", exact: true }).click();
+  const address = await page
+    .getByRole("dialog")
+    .locator("p")
+    .filter({ hasText: /^utest1/ })
+    .innerText();
+  await page.keyboard.press("Escape");
   return { address, phrase, birthday };
 }
 async function keepUnlocked(page: Page) {
   await page.bringToFront();
   if (
     await page
-      .getByRole("button", { name: "Unlock Testnet Wallet", exact: true })
+      .getByRole("button", { name: "Unlock Existing Wallet", exact: true })
       .isVisible()
   ) {
     await page
-      .getByRole("button", { name: "Unlock Testnet Wallet", exact: true })
+      .getByRole("button", { name: "Unlock Existing Wallet", exact: true })
       .click();
     await page.getByLabel("Wallet password", { exact: true }).fill(password);
     await page
@@ -72,6 +80,7 @@ try {
     b = await bob.newPage();
   const first = await create(a);
   if (live) {
+    await a.getByRole("button", { name: "Get TAZ", exact: true }).click();
     await a.getByRole("button", { name: "Request TAZ from Fauzec" }).click();
     await a.waitForFunction(() =>
       Object.keys(localStorage).some((k) =>
@@ -79,6 +88,7 @@ try {
       ),
     );
     console.log("DELIBERATE_CLAIM_SUBMITTED_ONCE");
+    await a.keyboard.press("Escape");
   }
   const second = await create(b);
   await a.bringToFront();
@@ -99,7 +109,9 @@ try {
   }
   await a.getByRole("button", { name: "Lock wallet", exact: true }).click();
   await a.reload();
-  await a.getByRole("button", { name: "Unlock Testnet Wallet" }).click();
+  await a.bringToFront(); // Background tabs intentionally defer periodic scans.
+  evidence.phase = "unlock-after-reload";
+  await a.getByRole("button", { name: "Unlock Existing Wallet" }).click();
   await a
     .getByLabel("Wallet password", { exact: true })
     .fill("incorrect-password");
@@ -111,20 +123,25 @@ try {
   await a.getByLabel("Wallet password", { exact: true }).fill(password);
   await a.getByRole("button", { name: "Unlock wallet", exact: true }).click();
   await a.getByText("Synced", { exact: true }).waitFor();
+  await a.getByRole("button", { name: "Receive", exact: true }).click();
   if (
     (await a
-      .locator("#wallet-receive p")
+      .getByRole("dialog")
+      .locator("p")
       .filter({ hasText: /^utest1/ })
       .innerText()) !== first.address
   )
     throw Error("Refresh changed wallet identity");
+  await a.keyboard.press("Escape");
   const restored = await browser.newContext();
   try {
     const p = await restored.newPage();
     p.setDefaultTimeout(120000);
     await p.goto(origin + "/wallet/testnet");
+    await p.bringToFront();
+    evidence.phase = "restore";
     await p
-      .getByRole("button", { name: "Restore Wallet", exact: true })
+      .getByRole("button", { name: "Import / Restore Wallet", exact: true })
       .click();
     await p.getByLabel("Recovery phrase", { exact: true }).fill(first.phrase);
     await p.getByLabel("Wallet birthday block").fill(String(first.birthday));
@@ -132,13 +149,16 @@ try {
     await p.getByLabel("Confirm password", { exact: true }).fill(password);
     await p.getByRole("button", { name: "Restore and synchronize" }).click();
     await p.getByText("Synced", { exact: true }).waitFor();
+    await p.getByRole("button", { name: "Receive", exact: true }).click();
     if (
       (await p
-        .locator("#wallet-receive p")
+        .getByRole("dialog")
+        .locator("p")
         .filter({ hasText: /^utest1/ })
         .innerText()) !== first.address
     )
       throw Error("Restore changed wallet identity");
+    await p.keyboard.press("Escape");
     evidence.restoreIdentity = true;
   } finally {
     await restored.close();
@@ -164,10 +184,9 @@ try {
     while (Date.now() < deadline) {
       await keepUnlocked(a);
       const value = await a
-        .getByText("Spendable Balance", { exact: true })
-        .locator("..")
-        .locator("strong")
-        .innerText();
+        .getByText(/^Available [0-9]/)
+        .innerText()
+        .then((text) => text.match(/[0-9]+\.[0-9]+/)?.[0] || "");
       if (/^\d+\.\d+$/.test(value) && Number(value) > 0.02) break;
       const error = await a.getByRole("alert").allTextContents();
       if (error.filter(Boolean).length)
@@ -175,7 +194,7 @@ try {
       console.log("WAITING_FOR_CONFIRMED_FUNDS");
       await a.waitForTimeout(30000);
     }
-    await a.getByRole("button", { name: "Send TAZ", exact: true }).click();
+    await a.getByRole("button", { name: "Send", exact: true }).click();
     await a
       .getByLabel("Recipient testnet Unified Address")
       .fill(second.address);
@@ -201,21 +220,22 @@ try {
     while (Date.now() < confirmationDeadline) {
       await keepUnlocked(b);
       const received = await b
-        .getByText("Confirmed Balance", { exact: true })
+        .getByText("Confirmed balance", { exact: true })
         .locator("..")
         .locator("strong")
         .innerText();
-      if (received === "0.01000000") {
+      if (received.trim().startsWith("0.01000000")) {
         evidence.receiverConfirmed = true;
         break;
       }
       console.log("WAITING_FOR_TRANSFER_CONFIRMATION");
       await b.waitForTimeout(30000);
     }
+    await a.getByRole("button", { name: "Activity", exact: true }).click();
     evidence.senderHistory = await a
       .locator("main")
       .last()
-      .getByRole("heading", { name: "Recent Transactions" })
+      .getByRole("heading", { name: "Activity", exact: true })
       .locator("..")
       .innerText();
     if (!evidence.receiverConfirmed)

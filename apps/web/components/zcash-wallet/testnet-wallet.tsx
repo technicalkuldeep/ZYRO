@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import {
   useCallback,
   useEffect,
@@ -16,6 +16,9 @@ import {
   ShieldCheck,
   Wallet,
   ExternalLink,
+  History,
+  Droplets,
+  Settings,
 } from "lucide-react";
 import QRCode from "qrcode";
 import {
@@ -41,14 +44,33 @@ import {
   submitClaim,
   type Claim,
 } from "../../lib/zcash-wallet/faucet";
+import { WalletActivity } from "./wallet-activity";
 import styles from "./wallet.module.css";
+import {
+  SecretInput,
+  WalletActionButton,
+  WalletModal,
+} from "./wallet-primitives";
+type Panel = "receive" | "faucet" | "activity" | "settings";
+type BalanceSnapshot = Pick<
+  WalletState,
+  "address" | "confirmed" | "spendable" | "pending" | "lastSync"
+>;
 type Mode = "landing" | "create" | "restore" | "unlock" | "send";
 const errorText = (error: unknown) =>
   error instanceof Error
     ? faucetMessage[error.message] || error.message
     : "Operation failed. Retry when the service is available.";
 export function TestnetWallet() {
+  const [panel, setPanel] = useState<Panel>();
+  const [showPhrase, setShowPhrase] = useState(false);
+  const [phraseCopied, setPhraseCopied] = useState(false);
+  const [noirView, setNoirView] = useState(false);
+  const [restoreNotice, setRestoreNotice] = useState(false);
+  const connectionIntent = useRef(false);
+  const intentRead = useRef(false);
   const [ready, setReady] = useState(false);
+  const [balanceSnapshot, setBalanceSnapshot] = useState<BalanceSnapshot>();
   const [state, setState] = useState<WalletState>(),
     [mode, setMode] = useState<Mode>("landing"),
     [exists, setExists] = useState(false);
@@ -60,6 +82,7 @@ export function TestnetWallet() {
     [acknowledged, setAcknowledged] = useState(false),
     [quote, setQuote] = useState<Quote>(),
     [qr, setQr] = useState(""),
+    [qrAddress, setQrAddress] = useState(""),
     [copied, setCopied] = useState(false);
   const [claim, setClaim] = useState<Claim>(),
     [network, setNetwork] = useState<{
@@ -78,7 +101,22 @@ export function TestnetWallet() {
     operationRevision = useRef(0);
   const update = useCallback((next: WalletState) => {
     current.current = next;
-    if (mounted.current) setState(next);
+    if (mounted.current) {
+      setState(next);
+      setBalanceSnapshot((previous) =>
+        next.synced
+          ? {
+              address: next.address,
+              confirmed: next.confirmed,
+              spendable: next.spendable,
+              pending: next.pending,
+              lastSync: next.lastSync,
+            }
+          : previous?.address === next.address
+            ? previous
+            : undefined,
+      );
+    }
   }, []);
   const worker = useCallback(() => {
     if (!engine.current)
@@ -96,6 +134,10 @@ export function TestnetWallet() {
     selected: () => current.current?.kind === "noir",
     account: (wallet, next) => {
       epoch.current++;
+      setPanel(undefined);
+      setMode("landing");
+      setShowPhrase(false);
+      setCopied(false);
       setQuote(undefined);
       setClaim(undefined);
       setQr("");
@@ -107,6 +149,7 @@ export function TestnetWallet() {
         current.current = undefined;
         provider.current = null;
         setState(undefined);
+        setBalanceSnapshot(undefined);
         setMode("landing");
       }
     },
@@ -171,7 +214,7 @@ export function TestnetWallet() {
           spendable: undefined,
           pending: undefined,
         });
-        setSyncStatus("Connection interrupted");
+        setSyncStatus("Offline · retry available");
       }
       throw e;
     }
@@ -189,11 +232,18 @@ export function TestnetWallet() {
     provider.current = null;
     current.current = undefined;
     setState(undefined);
+    setBalanceSnapshot(undefined);
     setPhrase("");
+    setShowPhrase(false);
+    setPhraseCopied(false);
+    setPanel(undefined);
+    setCopied(false);
     setQuote(undefined);
     setClaim(undefined);
     setQr("");
     setMode("landing");
+    setRestoreNotice(false);
+    setAcknowledged(false);
     setSyncStatus("Locked");
   }, []);
   useEffect(() => {
@@ -244,16 +294,27 @@ export function TestnetWallet() {
         "Faucet receipt storage is unavailable. Use the official website.",
       );
     }
+    if (panel !== "receive") {
+      setQr("");
+      return;
+    }
     let cancelled = false;
     void QRCode.toDataURL(state.address, { width: 280, margin: 2 }).then(
       (url) => {
-        if (!cancelled) setQr(url);
+        if (!cancelled) {
+          setQr(url);
+          setQrAddress(state.address);
+        }
+      },
+      () => {
+        if (!cancelled)
+          setError("Unable to generate QR. Copy your address instead.");
       },
     );
     return () => {
       cancelled = true;
     };
-  }, [state?.address]);
+  }, [state?.address, panel]);
   useEffect(() => {
     if (!state?.address || phrase) return;
     let cancelled = false,
@@ -272,7 +333,7 @@ export function TestnetWallet() {
         } catch {
           attempt++;
           if (!cancelled && revision === operationRevision.current)
-            setSyncStatus("Retrying");
+            setSyncStatus("Reconnecting…");
         } finally {
           if (revision === operationRevision.current) working.current = false;
           if (mounted.current && revision === operationRevision.current) {
@@ -344,6 +405,36 @@ export function TestnetWallet() {
       clearTimeout(timer);
     };
   }, [claim?.request_id, state?.address, refresh]);
+  useEffect(() => {
+    setPanel(undefined);
+    setQr("");
+    setCopied(false);
+    setQuote(undefined);
+  }, [state?.address]);
+  useEffect(() => {
+    setError("");
+  }, [panel]);
+  useEffect(() => {
+    // React Strict Mode replays mount effects; consume the explicit click once.
+    if (intentRead.current) return;
+    intentRead.current = true;
+    if (new URLSearchParams(location.search).get("connect") === "noir") {
+      setNoirView(true);
+      try {
+        connectionIntent.current =
+          sessionStorage.getItem("zyro:noir-connect-intent") === "yes";
+        sessionStorage.removeItem("zyro:noir-connect-intent");
+      } catch {
+        /* Explicit connection remains available. */
+      }
+    }
+  }, []);
+  useEffect(() => {
+    if (!ready || noir.status === "searching" || !connectionIntent.current)
+      return;
+    connectionIntent.current = false;
+    void connect();
+  }, [ready, noir.status]);
   async function onboard(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget,
@@ -371,6 +462,8 @@ export function TestnetWallet() {
         form.reset();
         if (generation !== epoch.current) return;
         setPhrase(next.phrase || "");
+        setShowPhrase(false);
+        setRestoreNotice(mode === "restore");
         const clean = { ...next };
         delete clean.phrase;
         update(clean);
@@ -381,6 +474,7 @@ export function TestnetWallet() {
     );
   }
   async function connect() {
+    setNoirView(true);
     await perform("Awaiting wallet approval", noir.connect);
   }
   async function prepare(event: FormEvent<HTMLFormElement>) {
@@ -445,6 +539,15 @@ export function TestnetWallet() {
   const rows = Array.isArray(state?.history)
     ? (state.history as Record<string, unknown>[])
     : [];
+  const balanceView =
+    state &&
+    (state.confirmed !== undefined ||
+      (state.kind === "noir" && state.spendable !== undefined))
+      ? state
+      : balanceSnapshot?.address === state?.address
+        ? balanceSnapshot
+        : state;
+  const cachedBalance = !!state && balanceView !== state && !!balanceView;
   return (
     <section className={styles.wallet} aria-label="Zcash testnet wallet">
       <header className={styles.top}>
@@ -456,28 +559,20 @@ export function TestnetWallet() {
           Zcash Testnet · TAZ
         </span>
       </header>
-      <a className={styles.textButton} href="/wallet">
-        ← Back to Testnet tools
+      <a className={styles.textButton} href="/testnet">
+        ← Back to Testnet
       </a>
-      <div className={styles.intro}>
-        <span className={styles.eyebrow}>PRIVATE BY DESIGN</span>
-        <h1>
-          {state ? (
-            "Wallet Overview"
-          ) : (
-            <>
-              Your privacy
-              <br />
-              <em>starts here.</em>
-            </>
-          )}
-        </h1>
-        <p>
-          {state
-            ? "Your keys. Your testnet funds. Independent of Arena."
-            : "Create or connect a Zcash testnet wallet to explore private transactions on ZYRO."}
-        </p>
-      </div>
+      {!state && (
+        <div className={styles.intro}>
+          <span className={styles.eyebrow}>ZYRO WALLET</span>
+          <h1>{noirView ? "Connect Noir." : "Make it yours."}</h1>
+          <p>
+            {noirView
+              ? "Approve a connection in your Noir extension."
+              : "A private testnet wallet, secured on this device."}
+          </p>
+        </div>
+      )}
       {error && (
         <div className={styles.error} role="alert">
           <strong>Action needed</strong>
@@ -485,14 +580,14 @@ export function TestnetWallet() {
           <button onClick={() => setError("")}>Dismiss</button>
         </div>
       )}
-      {busy && (
+      {busy && stage !== "Synchronizing blockchain" && (
         <div className={styles.notice} role="status">
           <span className={styles.pulse} />
           {stage || "Working…"}
           <small>Keep this page open while the operation completes.</small>
         </div>
       )}
-      {(!state || state.kind === "noir") && (
+      {noirView && !state && (
         <NoirStatusPanel
           status={noir.status}
           version={noir.version}
@@ -501,75 +596,66 @@ export function TestnetWallet() {
         />
       )}
       {!state && mode === "landing" && (
-        <div className={styles.landing}>
-          <section className={styles.panel}>
-            <ShieldCheck size={36} aria-hidden />
-            <h2>A private place to begin.</h2>
-            <p>
-              A real shielded wallet, secured on this device. TAZ is testnet
-              currency with no monetary value.
-            </p>
-            <div className={styles.actions}>
-              {exists ? (
-                <button
-                  className={styles.primary}
-                  onClick={() => setMode("unlock")}
-                  disabled={busy || !ready}
-                >
-                  <LockKeyhole size={18} />
-                  Unlock Testnet Wallet
-                </button>
-              ) : (
-                <button
-                  className={styles.primary}
-                  onClick={() => setMode("create")}
-                  disabled={busy || !ready}
-                >
-                  <Wallet size={18} />
-                  Create Testnet Wallet
-                </button>
-              )}
-              <button onClick={connect} disabled={busy || !ready}>
-                Connect Noir Wallet
-                <ArrowUpRight size={18} />
-              </button>
-            </div>
-            {!exists && (
+        <section className={styles.panel}>
+          {noirView ? (
+            <>
+              <h2>Noir Wallet</h2>
+              <p>Your keys stay in the extension.</p>
               <button
-                className={styles.textButton}
-                onClick={() => setMode("restore")}
+                className={styles.primary}
+                onClick={connect}
                 disabled={busy || !ready}
               >
-                Restore Wallet
+                Connect Noir Wallet
               </button>
-            )}
-            <a
-              className={styles.textButton}
-              href="https://github.com/NoirWallet/noir-wallet"
-              target="_blank"
-              rel="noreferrer"
-            >
-              Noir testnet extension setup <ExternalLink size={14} />
-            </a>
-          </section>
-          <aside className={styles.details}>
-            <span className={styles.largeGlyph}>z</span>
-            <h3>
-              Shielded. Independent.
-              <br />
-              Entirely testnet.
-            </h3>
-            <p>
-              No Google login. No Arena balance. Your recovery phrase stays in
-              your browser and its wallet worker.
-            </p>
-            <p className={styles.fine}>
-              ZIP-32 account 0 · Encrypted local storage
-              <br />
-              Automatic lock · Three confirmations
-            </p>
-          </aside>
-        </div>
+              <button onClick={() => setNoirView(false)}>
+                Use ZYRO Wallet
+              </button>
+            </>
+          ) : (
+            <>
+              <h2>{exists ? "Welcome back." : "Your keys. Your beginning."}</h2>
+              <div className={styles.onboardingChoices}>
+                {exists && (
+                  <button
+                    className={styles.primary}
+                    onClick={() => setMode("unlock")}
+                    disabled={busy || !ready}
+                  >
+                    <LockKeyhole size={18} />
+                    Unlock Existing Wallet
+                  </button>
+                )}
+                <button
+                  onClick={() => setMode("create")}
+                  disabled={exists || busy || !ready}
+                >
+                  <Wallet size={18} />
+                  Create New Wallet
+                </button>
+                <button
+                  onClick={() => setMode("restore")}
+                  disabled={exists || busy || !ready}
+                >
+                  Import / Restore Wallet
+                </button>
+              </div>
+              {exists && (
+                <p className={styles.fine}>
+                  An encrypted wallet already exists here. Unlock it to
+                  continue. To restore another wallet, use a separate browser
+                  profile; your existing vault will stay intact.
+                </p>
+              )}
+              <a
+                className={styles.textButton}
+                href="/wallet/testnet?connect=noir"
+              >
+                Connect Noir instead <ArrowUpRight size={16} />
+              </a>
+            </>
+          )}
+        </section>
       )}
       {!state && mode !== "landing" && (
         <section className={`${styles.panel} ${styles.formPanel}`}>
@@ -595,21 +681,23 @@ export function TestnetWallet() {
               ? "Your password decrypts this device's wallet. It is never sent to ZYRO."
               : "Choose a unique password of at least 12 characters. Save your recovery phrase and wallet birthday offline."}
           </p>
-          <form onSubmit={onboard} autoComplete="off">
+          <form key={mode} onSubmit={onboard}>
             {mode === "restore" && (
               <>
-                <label>
-                  Recovery phrase
-                  <textarea
-                    name="phrase"
-                    required
-                    autoComplete="off"
-                    autoCorrect="off"
-                    autoCapitalize="none"
-                    spellCheck={false}
-                    rows={4}
-                  />
-                </label>
+                <SecretInput
+                  label="Recovery phrase"
+                  name="phrase"
+                  required
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                />
+                <small>
+                  Compatible BIP-39 English phrases only. Testnet ZIP-32 account
+                  0, empty BIP-39 passphrase. Other wallets or account settings
+                  may derive different addresses.
+                </small>
                 <label>
                   Wallet birthday block
                   <input
@@ -618,38 +706,37 @@ export function TestnetWallet() {
                     min="280000"
                     step="1"
                     required
+                    defaultValue={280000}
                   />
                 </label>
                 <small>
-                  Use your backup's birthday or an earlier block. Older
-                  birthdays take longer to scan.
+                  A birthday after earlier payments can omit funds. Use your
+                  backup's birthday or an earlier block. Older birthdays take
+                  longer to scan.
                 </small>
               </>
             )}
-            <label>
-              {mode === "unlock" ? "Wallet password" : "New wallet password"}
-              <input
-                type="password"
-                name="password"
+            <SecretInput
+              label={
+                mode === "unlock" ? "Wallet password" : "New wallet password"
+              }
+              name="password"
+              minLength={12}
+              maxLength={1024}
+              required
+              autoComplete={
+                mode === "unlock" ? "current-password" : "new-password"
+              }
+            />
+            {mode !== "unlock" && (
+              <SecretInput
+                label="Confirm password"
+                name="confirm"
                 minLength={12}
                 maxLength={1024}
                 required
-                autoComplete={
-                  mode === "unlock" ? "current-password" : "new-password"
-                }
+                autoComplete="new-password"
               />
-            </label>
-            {mode !== "unlock" && (
-              <label>
-                Confirm password
-                <input
-                  type="password"
-                  name="confirm"
-                  minLength={12}
-                  required
-                  autoComplete="new-password"
-                />
-              </label>
             )}
             <button className={styles.primary} type="submit" disabled={busy}>
               {mode === "create"
@@ -663,72 +750,40 @@ export function TestnetWallet() {
       )}
       {state && (
         <>
-          <section className={styles.overview}>
-            <div>
-              <span className={styles.eyebrow}>
-                {state.kind === "embedded"
-                  ? "ZYRO BROWSER WALLET"
-                  : "NOIR EXTENSION WALLET"}
-              </span>
-              <p className={styles.shortAddress}>
-                {state.address.slice(0, 18)}…{state.address.slice(-12)}
-              </p>
-              <button onClick={copy}>
-                {copied ? <Check size={16} /> : <Copy size={16} />}
-                {copied ? "Address copied" : "Copy address"}
-              </button>
-            </div>
-            <div className={styles.sync}>
-              <strong>{syncStatus}</strong>
-              <small>
-                {state.tip
-                  ? `Scanned ${state.scanned ?? "—"} / ${state.tip}`
-                  : "Chain progress is reported by the wallet"}
-              </small>
-              <small>
-                {state.lastSync
-                  ? `Last sync ${new Date(state.lastSync).toLocaleTimeString()}`
-                  : "Balance unknown until synchronized"}
-              </small>
-              <button
-                onClick={
-                  state.kind === "noir"
-                    ? () =>
-                        void perform("Disconnecting Noir", async () => {
-                          await noir.disconnect();
-                          lock();
-                        })
-                    : lock
-                }
-              >
-                <LockKeyhole size={16} />
-                {state.kind === "embedded"
-                  ? "Lock wallet"
-                  : "Disconnect Noir Wallet"}
-              </button>
-              <button
-                onClick={() => {
-                  noir.dismiss();
-                  lock();
-                }}
-              >
-                Switch wallet
-              </button>
-            </div>
-          </section>
           {phrase && (
             <section className={`${styles.panel} ${styles.backup}`}>
               <h2>Back up your wallet</h2>
               <p>
-                Write these words in order and store them privately. Anyone with
-                this phrase can spend your funds. ZYRO cannot recover it for
-                you.
+                Keep these words private. Anyone with your phrase can spend your
+                funds.
               </p>
+              <button
+                aria-pressed={showPhrase}
+                onClick={() => setShowPhrase(!showPhrase)}
+              >
+                {showPhrase ? "Hide" : "Show"} Recovery Phrase
+              </button>
+              {showPhrase && (
+                <button
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(phrase);
+                      setPhraseCopied(true);
+                    } catch {
+                      setError(
+                        "Clipboard unavailable. Write down your phrase privately.",
+                      );
+                    }
+                  }}
+                >
+                  {phraseCopied ? "Copied" : "Copy recovery phrase"}
+                </button>
+              )}
               <ol>
                 {phrase.split(" ").map((word, i) => (
                   <li key={i}>
                     <span>{i + 1}</span>
-                    {word}
+                    {showPhrase ? word : "••••••"}
                   </li>
                 ))}
               </ol>
@@ -752,6 +807,9 @@ export function TestnetWallet() {
                   void perform("Saving backup acknowledgement", async () => {
                     update(await worker().request<WalletState>("backup"));
                     setPhrase("");
+                    setShowPhrase(false);
+                    setPhraseCopied(false);
+                    setCopied(false);
                     setAcknowledged(false);
                     await refresh();
                   })
@@ -761,37 +819,48 @@ export function TestnetWallet() {
               </button>
             </section>
           )}
+          {restoreNotice && (
+            <div className={styles.notice}>
+              <p>
+                Wallet restored. Compare the receiving address with your backup.
+                Recovery scans from block {state.birthday}; keep this page open.
+                Lock and unlock to verify your new password.
+              </p>
+              <button onClick={() => setRestoreNotice(false)}>Dismiss</button>
+            </div>
+          )}
           <div className={styles.balances}>
-            {[
-              ["Confirmed Balance", state.confirmed],
-              ["Spendable Balance", state.spendable],
-              ["Pending Balance", state.pending],
-            ].map(([label, value]) => (
-              <section className={styles.balance} key={label}>
-                <span>{label}</span>
-                <strong>{formatZats(value)}</strong>
-                <small>
-                  TAZ {value === undefined && "· Awaiting reliable wallet data"}
-                </small>
-              </section>
-            ))}
+            <section className={styles.balance}>
+              <span>
+                {state.confirmed === undefined && state.spendable !== undefined
+                  ? "Available balance"
+                  : "Confirmed balance"}
+              </span>
+              <strong>
+                {formatZats(balanceView?.confirmed ?? balanceView?.spendable)}{" "}
+                <small>TAZ</small>
+              </strong>
+              <small>
+                {cachedBalance
+                  ? `Cached · last checked ${balanceView?.lastSync ? new Date(balanceView.lastSync).toLocaleTimeString() : "earlier this session"}. Updating…`
+                  : state.confirmed === undefined
+                    ? state.kind === "noir"
+                      ? "Noir connection · View confirmed balance in the extension"
+                      : "Awaiting reliable wallet data"
+                    : "Available " + formatZats(state.spendable) + " TAZ"}
+              </small>
+            </section>
+            {balanceView?.pending !== undefined &&
+              BigInt(balanceView.pending) !== 0n && (
+                <p className={styles.pending}>
+                  +{formatZats(balanceView.pending)} TAZ pending
+                  {cachedBalance ? " · last checked" : ""}
+                </p>
+              )}
           </div>
-          <div className={styles.actions}>
-            <a href="#wallet-receive">
-              <ArrowDownLeft size={18} />
-              Receive
-            </a>
-            <button
-              disabled={busy || !!phrase}
-              onClick={() =>
-                document
-                  .getElementById("wallet-faucet")
-                  ?.scrollIntoView({ block: "center" })
-              }
-            >
-              Get TAZ
-            </button>
-            <button
+          <div className={styles.actionGrid}>
+            <WalletActionButton
+              icon={<ArrowUpRight size={20} />}
               disabled={
                 busy ||
                 !!phrase ||
@@ -799,31 +868,149 @@ export function TestnetWallet() {
                 state.spendable === undefined ||
                 !!state.submission
               }
-              onClick={() => setMode("send")}
+              onClick={() => {
+                setPanel(undefined);
+                setMode("send");
+              }}
             >
-              <ArrowUpRight size={18} />
-              Send TAZ
-            </button>
-            <button
-              disabled={busy || !!phrase}
-              onClick={() => void perform("Synchronizing blockchain", refresh)}
+              Send
+            </WalletActionButton>
+            <WalletActionButton
+              icon={<ArrowDownLeft size={20} />}
+              disabled={!!phrase}
+              onClick={() => setPanel("receive")}
             >
-              <RefreshCw size={18} />
-              Refresh Balance
-            </button>
+              Receive
+            </WalletActionButton>
+            <WalletActionButton
+              icon={<Droplets size={20} />}
+              disabled={!!phrase}
+              onClick={() => setPanel("faucet")}
+            >
+              Get TAZ
+            </WalletActionButton>
+            <WalletActionButton
+              icon={<History size={20} />}
+              disabled={!!phrase}
+              onClick={() => setPanel("activity")}
+            >
+              Activity
+            </WalletActionButton>
           </div>
-          {state.kind === "noir" && (
-            <p className={styles.fine}>
-              Noir owns the keys and approves transactions. Its SDK does not
-              expose confirmed balances, scanned height, or private history
-              here. View these inside Noir. Fixed-amount payments are supported;
-              the final fee and total must be reviewed in Noir's approval
-              window.
-            </p>
+          <section className={styles.overview}>
+            <div>
+              <span className={styles.eyebrow}>
+                {state.kind === "embedded"
+                  ? "ZYRO BROWSER WALLET"
+                  : "NOIR EXTENSION WALLET"}
+              </span>
+              <p className={styles.shortAddress}>
+                {state.address.slice(0, 18)}…{state.address.slice(-12)}
+              </p>
+              <button onClick={copy}>
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+                {copied ? "Address copied" : "Copy address"}
+              </button>
+            </div>
+            <div className={styles.sync}>
+              <strong role="status">{syncStatus}</strong>
+              {syncStatus.startsWith("Offline") ||
+              syncStatus.startsWith("Reconnecting") ? (
+                <button
+                  disabled={busy}
+                  onClick={() =>
+                    void perform("Synchronizing blockchain", refresh)
+                  }
+                >
+                  Retry connection
+                </button>
+              ) : null}
+              <small>
+                {state.lastSync
+                  ? "Last checked " +
+                    new Date(state.lastSync).toLocaleTimeString()
+                  : "Awaiting wallet data"}
+              </small>
+              <div className={styles.management}>
+                <button
+                  onClick={
+                    state.kind === "noir"
+                      ? () =>
+                          void perform("Disconnecting Noir", async () => {
+                            await noir.disconnect();
+                            lock();
+                          })
+                      : lock
+                  }
+                >
+                  <LockKeyhole size={16} />
+                  {state.kind === "embedded"
+                    ? "Lock wallet"
+                    : "Disconnect Noir Wallet"}
+                </button>
+                <button
+                  disabled={busy}
+                  onClick={() => {
+                    noir.dismiss();
+                    lock();
+                  }}
+                >
+                  Switch Wallet
+                </button>
+                <button onClick={() => setPanel("settings")} disabled={busy}>
+                  <Settings size={16} />
+                  Settings
+                </button>
+              </div>
+            </div>
+          </section>
+          {panel === "settings" && (
+            <WalletModal
+              error={error}
+              stage={stage}
+              title="Wallet settings"
+              busy={busy}
+              close={() => setPanel(undefined)}
+            >
+              <p>
+                {state.kind === "embedded"
+                  ? "Encrypted on this device. Locks after five minutes of inactivity."
+                  : "Connected through Noir. Keys and approval stay in the extension."}
+              </p>
+              <p className={styles.fine}>
+                TAZ is testnet currency, separate from real ZEC.
+              </p>
+              <button
+                disabled={busy}
+                onClick={() =>
+                  void perform("Synchronizing blockchain", refresh)
+                }
+              >
+                <RefreshCw size={16} />
+                Refresh balance
+              </button>
+              <a
+                className={styles.textButton}
+                href="/zcash-wallet/PROVENANCE.md"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Engine provenance and licensing
+              </a>
+            </WalletModal>
           )}
           {mode === "send" && (
-            <section className={`${styles.panel} ${styles.formPanel}`}>
-              <h2>Send TAZ</h2>
+            <WalletModal
+              error={error}
+              stage={stage}
+              title="Send TAZ"
+              busy={busy}
+              close={() => {
+                setMode("landing");
+                setQuote(undefined);
+              }}
+            >
+              <small>Available {formatZats(state.spendable)} TAZ</small>
               <p>Shielded funding only · Zcash public testnet</p>
               {!quote ? (
                 <form onSubmit={prepare}>
@@ -922,7 +1109,7 @@ export function TestnetWallet() {
               >
                 Cancel
               </button>
-            </section>
+            </WalletModal>
           )}
           {state.submission && (
             <section className={styles.notice} aria-live="polite">
@@ -956,11 +1143,21 @@ export function TestnetWallet() {
               </button>
             </section>
           )}
-          <div className={styles.columns}>
-            <section className={styles.panel} id="wallet-receive">
-              <h2>Receive TAZ</h2>
+          {panel === "receive" && (
+            <WalletModal
+              error={error}
+              stage={stage}
+              title="Receive TAZ"
+              busy={false}
+              close={() => {
+                setPanel(undefined);
+                setQr("");
+                setCopied(false);
+              }}
+            >
+              <span className={styles.eyebrow}>ZCASH TESTNET</span>
               <p>Send only Zcash testnet funds to this address.</p>
-              {qr && (
+              {qr && qrAddress === state.address && (
                 <img
                   className={styles.qr}
                   src={qr}
@@ -976,8 +1173,20 @@ export function TestnetWallet() {
               {state.birthday && (
                 <small>Recovery birthday: {state.birthday}</small>
               )}
-            </section>
-            <section className={styles.panel} id="wallet-faucet">
+            </WalletModal>
+          )}
+          {panel === "faucet" && (
+            <WalletModal
+              error={error}
+              stage={stage}
+              title="Get TAZ"
+              busy={busy}
+              close={() => setPanel(undefined)}
+            >
+              <p className={styles.address}>{state.address}</p>
+              <button onClick={copy}>
+                {copied ? "Copied" : "Copy receiving address"}
+              </button>
               <span className={styles.eyebrow}>FAUZEC · PUBLIC TESTNET</span>
               <h2>Get Free Testnet TAZ</h2>
               <p>
@@ -1017,7 +1226,6 @@ export function TestnetWallet() {
                 href="https://fauzec.com/"
                 target="_blank"
                 rel="noreferrer"
-                onClick={() => void copy()}
               >
                 Open official Fauzec website <ExternalLink size={14} />
               </a>
@@ -1069,71 +1277,44 @@ export function TestnetWallet() {
                   </button>
                 </div>
               )}
-            </section>
-          </div>
-          <section className={styles.panel}>
-            <h2>Recent Transactions</h2>
-            <p>Private details come from this wallet’s blockchain scan.</p>
-            {rows.length ? (
-              <ul className={styles.history}>
-                {rows.map((row, i) => (
-                  <li key={String(row.txid || i)}>
-                    <code className={styles.address}>
-                      {String(
-                        row.txid ||
-                          row.tx_id ||
-                          "Transaction identifier unavailable",
-                      )}
-                    </code>
-                    <span>{String(row.status || "Observed by wallet")}</span>
-                    {row.kind !== undefined && <span>{String(row.kind)}</span>}
-                    {row.amount !== undefined && (
-                      <span>{formatZats(String(row.amount))} TAZ</span>
-                    )}
-                    {row.fee !== undefined && (
-                      <small>
-                        Network fee {formatZats(String(row.fee))} TAZ
-                      </small>
-                    )}
-                    {row.timestamp !== undefined && (
-                      <small>
-                        {new Date(
-                          Number(row.timestamp) * 1000,
-                        ).toLocaleString()}
-                      </small>
-                    )}
-                    {row.mined_height || row.block_height ? (
-                      <small>
-                        Block {String(row.mined_height || row.block_height)}
-                      </small>
-                    ) : (
-                      <small>Not yet mined</small>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className={styles.empty}>
-                <ArrowDownLeft size={24} />
-                <h3>
-                  {state.synced
-                    ? "No transactions yet"
-                    : "Waiting for wallet synchronization"}
-                </h3>
-                <p>
-                  {state.kind === "noir"
-                    ? "Open Noir Wallet for private transaction history."
-                    : "Receive testnet TAZ to begin. Incoming funds appear after the wallet scans them."}
-                </p>
-              </div>
-            )}
-          </section>
+            </WalletModal>
+          )}
+          {panel === "activity" && (
+            <WalletModal
+              error={error}
+              stage={stage}
+              title="Activity"
+              busy={false}
+              close={() => setPanel(undefined)}
+            >
+              <p>Private details come from this wallet’s blockchain scan.</p>
+              {rows.length ? (
+                <WalletActivity rows={rows} />
+              ) : (
+                <div className={styles.empty}>
+                  <ArrowDownLeft size={24} />
+                  <h3>
+                    {state.synced
+                      ? "No transactions yet"
+                      : "Waiting for wallet synchronization"}
+                  </h3>
+                  <p>
+                    {state.kind === "noir"
+                      ? "Open Noir Wallet for private transaction history."
+                      : "Receive testnet TAZ to begin. Incoming funds appear after the wallet scans them."}
+                  </p>
+                </div>
+              )}
+            </WalletModal>
+          )}
         </>
       )}
       <footer className={styles.footer}>
         <ShieldCheck size={16} />
         Testnet funds only. Keys stay on your device.
-        <span>Arena balances and Google accounts are separate.</span>
+        <a href="/zcash-wallet/PROVENANCE.md" target="_blank" rel="noreferrer">
+          Engine notices
+        </a>
       </footer>
     </section>
   );

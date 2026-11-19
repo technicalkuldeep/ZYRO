@@ -5,10 +5,13 @@ import { describe, expect, it, vi } from "vitest";
 import { normalizeHistory } from "../../apps/web/public/zcash-wallet/history.mjs";
 // Mock engine failures to verify authorization/persistence ordering. These tests
 // are not evidence of real cryptography, scanning, or testnet spending.
-async function harness(options: { sendFails?: boolean; lag?: boolean } = {}) {
+async function harness(
+  options: { sendFails?: boolean; lag?: boolean; receipt?: boolean } = {},
+) {
   const messages: any[] = [],
     records: any[] = [];
   let scanned = options.lag ? 90 : 100;
+  let confirmed = !options.receipt;
   const send = vi.fn(async () => {
     if (options.sendFails) throw Error("transport failed");
     return { status: "success", txIds: ["a".repeat(64)] };
@@ -24,9 +27,17 @@ async function harness(options: { sendFails?: boolean; lag?: boolean } = {}) {
           {
             sapling_balance: 0,
             orchard_balance: 0,
-            ironwood_balance: 2000000,
-            spendable_balance: 2000000,
-            pending_balance: 0,
+            ironwood_balance: options.receipt
+              ? confirmed
+                ? 20000000
+                : 0
+              : 2000000,
+            spendable_balance: options.receipt
+              ? confirmed
+                ? 20000000
+                : 0
+              : 2000000,
+            pending_balance: confirmed ? 0 : 20000000,
           },
         ],
       ],
@@ -92,9 +103,28 @@ async function harness(options: { sendFails?: boolean; lag?: boolean } = {}) {
     await runInContext("queue", context);
     return messages.find((m) => m.id === id);
   };
-  return { request, records, send };
+  return {
+    request,
+    records,
+    send,
+    confirmReceipt: () => {
+      confirmed = true;
+    },
+  };
 }
 describe("wallet-specific transaction safety", () => {
+  it("preserves a deterministic pending 0.2 TAZ receipt becoming confirmed without double counting", async () => {
+    const h = await harness({ receipt: true });
+    const pending = (await h.request("sync")).result;
+    expect(pending.pending).toBe("20000000");
+    expect(pending.confirmed).toBe("0");
+    h.confirmReceipt();
+    const confirmed = (await h.request("sync")).result;
+    expect(confirmed.pending).toBe("0");
+    expect(confirmed.confirmed).toBe("20000000");
+    expect(confirmed.spendable).toBe("20000000");
+    expect(h.send).not.toHaveBeenCalled();
+  });
   it("persists intent before signing and blocks duplicate sends after an ambiguous broadcast", async () => {
     const h = await harness({ sendFails: true });
     const quote = await h.request("estimate", {

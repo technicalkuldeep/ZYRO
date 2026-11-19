@@ -1,7 +1,7 @@
 /* Palette and typography follow brand.md. Every selector is wallet-local. */
 .wallet.entry {
-  min-height: 0;
-  padding: 24px 0;
+  min-height: 75vh;
+  padding: 32px 24px 48px;
 }
 .wallet {
   --w-bg: #0b0f0e;
@@ -12,11 +12,218 @@
   --w-jade: #b5f477;
   color: var(--w-text);
   background: var(--w-bg);
-  max-width: 1184px;
+  max-width: 960px;
   margin: 0 auto;
   padding: 32px 24px 64px;
   min-height: 80vh;
   font-family: Arial, sans-serif;
+}
+
+/* Entry → deliberate action → focused panel. No dashboard layout animation. */
+.entryIntro {
+  padding: 72px 0 36px;
+}
+.entryChoices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.entryChoice {
+  position: relative;
+  display: block;
+  padding: 32px;
+  min-width: 0;
+  border: 1px solid var(--w-border);
+  border-radius: 20px;
+  background: var(--w-panel);
+  text-decoration: none;
+  color: var(--w-text);
+}
+.entryChoice > svg {
+  color: var(--w-jade);
+}
+.entryChoice > svg:last-child {
+  position: absolute;
+  right: 24px;
+  top: 32px;
+}
+.entryChoice:hover {
+  border-color: var(--w-jade);
+}
+.wallet .entryChoice h2 {
+  margin-top: 40px;
+}
+.wallet .entryChoice p {
+  margin-bottom: 0;
+  max-width: 30ch;
+}
+.onboardingChoices {
+  display: grid;
+  gap: 12px;
+  max-width: 480px;
+  margin: 28px 0;
+}
+.management {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+.management button {
+  margin: 0;
+}
+.wallet .balances {
+  display: block;
+  margin: 40px 0 32px;
+}
+.wallet .balance {
+  background: none;
+  padding: 0;
+  border: 0;
+}
+.wallet .balance strong {
+  font-size: clamp(28px, 5.5vw, 56px);
+  letter-spacing: -2px;
+  margin: 16px 0 8px;
+}
+.wallet .balance strong small {
+  display: inline;
+  font:
+    16px Arial,
+    sans-serif;
+  letter-spacing: 0;
+}
+.pending {
+  color: var(--w-jade) !important;
+}
+.actionGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding-bottom: 24px;
+}
+.wallet .actionButton {
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px 12px;
+  border-radius: 16px;
+}
+.actionButton svg {
+  color: var(--w-jade);
+}
+.secretInput {
+  display: flex;
+  position: relative;
+  margin-top: 8px;
+}
+.secretInput input {
+  padding-right: 56px !important;
+}
+.wallet .secretInput button {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  bottom: 2px;
+  min-height: 40px;
+  padding: 10px;
+  border: 0;
+  background: transparent;
+}
+.wallet .modal {
+  margin: auto;
+  color: var(--w-text);
+  background: var(--w-panel);
+  border: 1px solid var(--w-border);
+  border-radius: 20px;
+  padding: 28px;
+  width: min(580px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  overflow: auto;
+  box-shadow: 0 24px 80px #0008;
+}
+.modal::backdrop {
+  background: #000b;
+}
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.wallet .modalHeader h2 {
+  margin: 0;
+}
+.wallet .modalHeader button {
+  padding: 10px;
+  flex: none;
+}
+.modal .qr {
+  margin: 24px auto;
+}
+.activityHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.activityHeading > span {
+  margin-left: auto;
+  color: var(--w-muted);
+  font-size: 12px;
+}
+.wallet summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--w-muted);
+}
+.wallet summary:focus-visible {
+  outline: 2px solid var(--w-jade);
+  outline-offset: 4px;
+}
+.modal button + button {
+  margin-left: 8px;
+}
+.wallet .footer a {
+  color: var(--w-muted);
+  margin-left: auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+@media (max-width: 600px) {
+  .entryChoices {
+    grid-template-columns: 1fr;
+  }
+  .entryIntro {
+    padding-top: 40px;
+  }
+  .wallet .entryChoice h2 {
+    margin-top: 24px;
+  }
+  .entryChoice {
+    padding: 24px;
+  }
+  .actionGrid {
+    gap: 8px;
+  }
+  .wallet .actionButton {
+    padding: 20px 4px;
+    font-size: 12px;
+  }
+  .management {
+    justify-content: flex-start;
+  }
+  .wallet .modal {
+    padding: 20px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .modal[open] {
+    animation: walletReveal 160ms ease-out;
+  }
 }
 .wallet * {
   box-sizing: border-box;
@@ -441,7 +648,8 @@
     font-size: 10px;
   }
   .wordmark span {
-    display: none;
+    font-size: 12px;
+    margin-left: 8px;
   }
   .footer span {
     margin-left: 0;
