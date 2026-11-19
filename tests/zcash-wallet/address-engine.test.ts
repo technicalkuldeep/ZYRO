@@ -20,6 +20,25 @@ beforeAll(async () => {
 }, 30000);
 afterAll(() => vi.unstubAllGlobals());
 describe("actual pinned Zcash WASM address and network rules", () => {
+  it.each([
+    [12, "about"],
+    [15, "address"],
+    [18, "agent"],
+    [21, "admit"],
+    [24, "art"],
+  ])(
+    "validates %i-word BIP-39 checksum vectors and rejects corruption",
+    (count, finalWord) => {
+      // Public all-zero entropy vectors. Never fund these identities.
+      const words = [
+        ...Array(Number(count) - 1).fill("abandon"),
+        String(finalWord),
+      ];
+      expect(() => engine.validate_mnemonic(words.join(" "))).not.toThrow();
+      words[words.length - 1] = "abandon";
+      expect(() => engine.validate_mnemonic(words.join(" "))).toThrow();
+    },
+  );
   it("derives and fully decodes the same testnet account after restoration", () => {
     const a = engine.mnemonic_to_addresses("test", phrase, "", 0);
     const b = engine.mnemonic_to_addresses("test", phrase, "", 0);

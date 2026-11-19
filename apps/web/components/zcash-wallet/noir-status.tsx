@@ -41,15 +41,14 @@ export function NoirStatusPanel({
       )}
       {status === "unsupported" && (
         <p>
-          Use Noir V1 1.0.27–1.x with shielded funding support, or V2. V1 needs
-          the testnet build; V2 needs Testnet Mode in Developer Settings.
+          Use the verified Noir 1.0.41 testnet extension. Noir V2 has not been
+          verified with ZYRO.
         </p>
       )}
       {status === "wrong-network" && (
         <p>
-          Choose the V1 testnet extension or V2 Testnet Mode, unlock, then
-          reconnect. ZYRO will not switch the extension to mainnet or import its
-          keys.
+          Choose the Noir testnet extension, unlock, then reconnect. ZYRO will
+          not switch the extension to mainnet or import its keys.
         </p>
       )}
       {(status === "locked" || status === "unauthorized") && (

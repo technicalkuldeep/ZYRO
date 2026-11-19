@@ -17,14 +17,10 @@ try {
   await page.goto(origin);
   await page.locator('a[href="/wallet"]').first().click();
   await expect(page.getByLabel("Testnet wallet onboarding")).toBeVisible();
+  await expect(page.locator("main")).not.toContainText("Integration Status");
+  await page.getByRole("link", { name: /Open ZYRO Wallet/ }).click();
   await expect(
-    page.getByRole("heading", { name: "Discover shielded Zcash." }),
-  ).toBeVisible();
-  await page
-    .getByRole("link", { name: "Open Zcash Testnet Wallet", exact: true })
-    .click();
-  await expect(
-    page.getByRole("button", { name: "Create Testnet Wallet", exact: true }),
+    page.getByRole("button", { name: "Create New Wallet", exact: true }),
   ).toBeEnabled();
   if (page.url().includes("signin"))
     throw Error("Wallet requires Google login");
@@ -32,7 +28,7 @@ try {
   await expect(page.getByLabel("Testnet wallet onboarding")).toBeVisible();
   await page.goForward();
   await expect(
-    page.getByRole("button", { name: "Connect Noir Wallet", exact: true }),
+    page.getByRole("link", { name: /Connect Noir instead/ }),
   ).toBeVisible();
   results.navigation = true;
   await context.close();
@@ -113,7 +109,9 @@ try {
     );
     const p = await mocked.newPage();
     p.setDefaultTimeout(90000);
-    await p.goto(origin.replace("127.0.0.1", host) + "/wallet/testnet");
+    await p.goto(
+      origin.replace("127.0.0.1", host) + "/wallet/testnet?connect=noir",
+    );
     await expect(p.getByLabel("Noir Wallet connection")).toContainText(
       "No account authorized",
     );
@@ -138,14 +136,14 @@ try {
       .getByRole("button", { name: "Connect Noir Wallet", exact: true })
       .click();
     await expect(
-      p.getByRole("heading", { name: "Wallet Overview" }),
+      p.getByText("NOIR EXTENSION WALLET", { exact: true }),
     ).toBeVisible({ timeout: 90000 });
-    await expect(p.getByLabel("Noir Wallet connection")).toContainText(
-      "Connected to Zcash Testnet",
-    );
+    await expect(
+      p.getByText("NOIR EXTENSION WALLET", { exact: true }),
+    ).toBeVisible();
     await p.reload();
     await expect(
-      p.getByRole("heading", { name: "Wallet Overview" }),
+      p.getByText("NOIR EXTENSION WALLET", { exact: true }),
     ).toBeVisible({ timeout: 90000 });
     expect(
       await p.evaluate(() =>
@@ -162,7 +160,7 @@ try {
       .getByRole("button", { name: "Connect Noir Wallet", exact: true })
       .click();
     await expect(
-      p.getByRole("heading", { name: "Wallet Overview" }),
+      p.getByText("NOIR EXTENSION WALLET", { exact: true }),
     ).toBeVisible();
     await p.evaluate(() => {
       const qa = (window as any).__qa;
@@ -173,8 +171,43 @@ try {
       "Wrong network",
     );
     await expect(
-      p.getByRole("heading", { name: "Wallet Overview" }),
+      p.getByText("NOIR EXTENSION WALLET", { exact: true }),
     ).toHaveCount(0);
+    await p.evaluate(() => {
+      const qa = window.__qa;
+      qa.network = "testnet";
+      qa.emit("accountsChanged", {});
+    });
+    // The event silently reconnects the already authorized account.
+    await expect(
+      p.getByText("NOIR EXTENSION WALLET", { exact: true }),
+    ).toBeVisible({ timeout: 90000 });
+    await p.getByRole("button", { name: "Receive", exact: true }).click();
+    await p.keyboard.press("Escape");
+    await p
+      .getByRole("button", { name: "Disconnect Noir Wallet", exact: true })
+      .click();
+    await expect(
+      p.getByRole("button", { name: "Lock wallet", exact: true }),
+    ).toHaveCount(0);
+    await expect(
+      p.getByText("NOIR EXTENSION WALLET", { exact: true }),
+    ).toHaveCount(0);
+    await p.goto(origin.replace("127.0.0.1", host) + "/testnet", {
+      waitUntil: "networkidle",
+    });
+    await p.getByRole("link", { name: /Connect Noir Wallet/ }).click();
+    await expect(
+      p.getByText("NOIR EXTENSION WALLET", { exact: true }),
+    ).toBeVisible({ timeout: 90000 });
+    expect(
+      await p.evaluate(() =>
+        (window as any).__qa.calls.includes("zcash_requestAccounts"),
+      ),
+    ).toBe(true);
+    await p.getByRole("button", { name: "Receive", exact: true }).click();
+    await p.evaluate(() => (window as any).__qa.emit("accountsChanged", []));
+    await expect(p.getByRole("dialog")).toHaveCount(0);
     results[host] = true;
     await mocked.close();
   }

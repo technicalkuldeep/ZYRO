@@ -620,3 +620,7 @@ preserved; their uncommitted status predates this completion work. Generated
 Arena file changed. Later escrow work may consume the separate wallet interface
 only after the live receiving, funded external sending and licensing gates close;
 no Phase 3 integration was implemented here.
+
+## Premium wallet UX follow-up
+
+See [ZYRO Wallet premium UX](zcash-wallet-premium-ux.md) for current flows, recovery compatibility, and verification. Historical Phase 2 evidence remains preserved.

@@ -1,47 +1,54 @@
 "use client";
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ArrowUpRight, Wallet, Plug } from "lucide-react";
 import styles from "./wallet.module.css";
 export function TestnetWalletEntry() {
-  const [noirHref, setNoirHref] = useState("/wallet/testnet");
-  useEffect(() => {
-    if (
-      location.protocol === "http:" &&
-      ["127.0.0.1", "[::1]"].includes(location.hostname)
-    ) {
-      const url = new URL("/wallet/testnet", location.origin);
-      url.hostname = "localhost";
-      setNoirHref(url.href);
-    }
-  }, []);
   return (
     <section
-      className={`${styles.wallet} ${styles.entry}`}
+      className={styles.wallet + " " + styles.entry}
       aria-label="Testnet wallet onboarding"
     >
-      <div className={styles.panel}>
-        <span className={styles.eyebrow}>ZCASH TESTNET · TAZ</span>
+      <header className={styles.top}>
+        <Link href="/" className={styles.wordmark}>
+          ZYRO<span>/ wallet</span>
+        </Link>
+        <span className={styles.network}>TESTNET · TAZ</span>
+      </header>
+      <div className={styles.entryIntro}>
+        <span className={styles.eyebrow}>PRIVATE PAYMENTS, YOUR WAY</span>
         <h1>
-          Your testnet wallet.
+          Your wallet.
           <br />
-          <em>Your choice.</em>
+          <em>Your space.</em>
         </h1>
-        <p>
-          Create or restore an encrypted browser wallet, or connect Noir. No
-          Google account is required. The existing transaction observer and
-          developer tools remain below.
-        </p>
-        <div className={styles.actions}>
-          <Link href="/wallet/testnet" className={styles.primary}>
-            Open Zcash Testnet Wallet
-          </Link>
-          <Link href={noirHref}>Connect Noir Wallet</Link>
-        </div>
-        <small>
-          Noir V1 uses HTTP localhost. Embedded wallets remain on their original
-          browser origin. Mainnet and Arena balances are separate.
-        </small>
       </div>
+      <div className={styles.entryChoices}>
+        <a href="/wallet/testnet" className={styles.entryChoice}>
+          <Wallet size={28} />
+          <h2>Open ZYRO Wallet</h2>
+          <p>Create, unlock, or restore a Zcash testnet wallet.</p>
+          <ArrowUpRight size={20} />
+        </a>
+        <a
+          href="/wallet/testnet?connect=noir"
+          className={styles.entryChoice}
+          onClick={() => {
+            try {
+              sessionStorage.setItem("zyro:noir-connect-intent", "yes");
+            } catch {
+              /* The connection view still offers manual approval. */
+            }
+          }}
+        >
+          <Plug size={28} />
+          <h2>Connect Noir Wallet</h2>
+          <p>Use Noir, the Zcash wallet browser extension.</p>
+          <ArrowUpRight size={20} />
+        </a>
+      </div>
+      <footer className={styles.footer}>
+        Zcash Testnet only. TAZ has no monetary value.
+      </footer>
     </section>
   );
 }
