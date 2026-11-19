@@ -17,6 +17,7 @@ import {
   categories,
 } from "../../../packages/shared/src/arena-games.js";
 import { pairs, type Pair } from "./price-provider.js";
+import { livePrices } from "./live-prices.js";
 
 export function cookie(req: Request, name: string) {
   return req.headers.cookie
@@ -214,6 +215,52 @@ export function accountRoutes(
     res.json(await (await getAccounts()).leaderboard()),
   );
   router.use("/account", authenticated);
+  router.get("/account/live-prices", (req, res) => {
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache, no-transform");
+    res.setHeader("X-Accel-Buffering", "no");
+    res.flushHeaders();
+    let dirty = true;
+    const listener = () => {
+      dirty = true;
+    };
+    livePrices.listeners.add(listener);
+    // Bound downstream work and buffering, including slow/disconnected clients.
+    const timer = setInterval(() => {
+      if (!dirty) return;
+      if (res.writableLength > 65536) {
+        res.destroy();
+        return;
+      }
+      dirty = false;
+      res.write(`data: ${JSON.stringify(livePrices.snapshot())}\n\n`);
+    }, 100);
+    req.on("close", () => {
+      clearInterval(timer);
+      livePrices.listeners.delete(listener);
+    });
+  });
+  router.get("/account/fast", async (_req, res) =>
+    res.json(
+      await (
+        await arenaServices(await getAccounts())
+      ).fast.list(res.locals.accountUser._id),
+    ),
+  );
+  router.post(
+    "/account/fast/:id/predict",
+    rateLimit({ windowMs: 60000, limit: 30 }),
+    async (req, res) =>
+      res.json(
+        await (
+          await arenaServices(await getAccounts())
+        ).fast.enter(
+          res.locals.accountUser._id,
+          z.string().parse(req.params.id),
+          req.body,
+        ),
+      ),
+  );
   router.get("/account/discovery", async (_req, res) => {
     const services = await arenaServices(await getAccounts());
     const markets = await services.crypto.list();

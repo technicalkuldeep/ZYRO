@@ -1,0 +1,220 @@
+{
+  "verifiedAt": "2026-11-19T08:53:28.516Z",
+  "isolatedDatabase": true,
+  "realWebSocket": true,
+  "assets": {
+    "serverTime": 1795078408516,
+    "generation": 1,
+    "metrics": {
+      "received": 3741,
+      "accepted": 2810,
+      "rejected": 0,
+      "reconnects": 0,
+      "gaps": 0
+    },
+    "assets": [
+      {
+        "pair": "BTC-USD",
+        "tick": {
+          "pair": "BTC-USD",
+          "price": 63570.82,
+          "time": 1795078409149,
+          "receivedAt": 1795078408046,
+          "sequence": 139750223016,
+          "tradeId": 1136563632
+        },
+        "status": "Live"
+      },
+      {
+        "pair": "ETH-USD",
+        "tick": {
+          "pair": "ETH-USD",
+          "price": 1798.89,
+          "time": 1795078405955,
+          "receivedAt": 1795078404849,
+          "sequence": 105367999386,
+          "tradeId": 856497354
+        },
+        "status": "Live"
+      },
+      {
+        "pair": "SOL-USD",
+        "tick": {
+          "pair": "SOL-USD",
+          "price": 74.4,
+          "time": 1795078402900,
+          "receivedAt": 1795078401793,
+          "sequence": 33931930891,
+          "tradeId": 361759105
+        },
+        "status": "Live"
+      }
+    ]
+  },
+  "round": {
+    "_id": "fast:BTC-USD:1795078260000",
+    "attempts": 2,
+    "createdAt": "2026-11-19T08:48:21.666Z",
+    "nextAttempt": "2026-11-19T08:53:10.000Z",
+    "spec": {
+      "version": 1,
+      "pair": "BTC-USD",
+      "provider": "Coinbase Exchange",
+      "entryOpens": 1795078200000,
+      "cutoff": 1795078255000,
+      "start": 1795078260000,
+      "end": 1795078380000,
+      "startingCandle": 1795078200,
+      "endingCandle": 1795078320,
+      "granularity": 60,
+      "operator": "STRICT_GT_LT_8_DECIMAL_UNITS",
+      "tie": "REFUND",
+      "payout": "WIN_2X_LOSS_0",
+      "unavailable": "RETRY_30_SECONDS_REFUND_AFTER_1_HOUR",
+      "timezone": "UTC"
+    },
+    "specHash": "274ff52bcb488f65dec22ba7b640f785977cdfcd4548cc8a7e71bf5d9c324915",
+    "status": "SETTLED",
+    "revision": 1,
+    "opening": {
+      "time": 1795078200,
+      "low": 63494.39,
+      "high": 63509.08,
+      "open": 63502.71,
+      "close": 63494.39,
+      "volume": 2.67686415,
+      "raw": [
+        1795078200,
+        63494.39,
+        63509.08,
+        63502.71,
+        63494.39,
+        2.67686415
+      ]
+    },
+    "openingVerifiedAt": "2026-11-19T08:51:11.291Z",
+    "evidence": {
+      "opening": {
+        "time": 1795078200,
+        "low": 63494.39,
+        "high": 63509.08,
+        "open": 63502.71,
+        "close": 63494.39,
+        "volume": 2.67686415,
+        "raw": [
+          1795078200,
+          63494.39,
+          63509.08,
+          63502.71,
+          63494.39,
+          2.67686415
+        ]
+      },
+      "closing": {
+        "time": 1795078320,
+        "low": 63523.34,
+        "high": 63559.09,
+        "open": 63523.34,
+        "close": 63553.9,
+        "volume": 2.37076927,
+        "raw": [
+          1795078320,
+          63523.34,
+          63559.09,
+          63523.34,
+          63553.9,
+          2.37076927
+        ]
+      },
+      "product": "BTC-USD",
+      "provider": "Coinbase Exchange",
+      "fetchedAt": "2026-11-19T08:53:11.169Z",
+      "openingVerifiedAt": "2026-11-19T08:51:11.291Z",
+      "closingVerifiedAt": "2026-11-19T08:53:11.169Z",
+      "specHash": "274ff52bcb488f65dec22ba7b640f785977cdfcd4548cc8a7e71bf5d9c324915",
+      "urls": [
+        "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60&start=2026-11-19T08:50:00.000Z&end=2026-11-19T08:51:00.000Z",
+        "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60&start=2026-11-19T08:52:00.000Z&end=2026-11-19T08:53:00.000Z"
+      ],
+      "responseFormat": "Coinbase [time,low,high,open,close,volume]; HTTP 200; completed exact timestamps"
+    },
+    "outcome": "UP"
+  },
+  "prediction": {
+    "id": "7bd829d5-a701-4c43-a3e0-3acec69a1e1d",
+    "choice": "UP",
+    "stake": 10,
+    "result": {
+      "values": [],
+      "label": "UP",
+      "verdict": "WIN"
+    },
+    "payout": 20
+  },
+  "balance": {
+    "available": 110,
+    "committed": 0
+  },
+  "ledger": [
+    {
+      "id": "d873f7c7-9e38-43a1-96d3-87910fd9a151",
+      "operation": "settle:7bd829d5-a701-4c43-a3e0-3acec69a1e1d",
+      "kind": "WIN",
+      "amount": 20,
+      "before": 90,
+      "after": 110
+    },
+    {
+      "id": "9c385ead-a4ad-4538-ad09-0148275451e3",
+      "operation": "stake:7bd829d5-a701-4c43-a3e0-3acec69a1e1d",
+      "kind": "STAKE",
+      "amount": -10,
+      "before": 100,
+      "after": 90
+    }
+  ],
+  "replayedSettlementEntries": 1,
+  "databaseReconnected": true,
+  "refreshedBrowser": true,
+  "metrics": {
+    "messages": 29,
+    "frames": 21,
+    "maxReceiveToChartMs": 363,
+    "totalReceiveToChartMs": 1426,
+    "historyLoads": 1,
+    "gaps": 0
+  },
+  "responsiveness": {
+    "frames": 60,
+    "maxFrameWaitMs": 22.099999964237213,
+    "meanFrameWaitMs": 16.60166666607062
+  },
+  "assetChanges": [
+    {
+      "listeners": 7,
+      "heap": 37349774
+    },
+    {
+      "listeners": 7,
+      "heap": 21349919
+    },
+    {
+      "listeners": 7,
+      "heap": 28593465
+    },
+    {
+      "listeners": 7,
+      "heap": 35747032
+    },
+    {
+      "listeners": 7,
+      "heap": 42924808
+    },
+    {
+      "listeners": 7,
+      "heap": 21921048
+    }
+  ],
+  "remainingSSEListeners": 0,
+  "pageErrors": []
+}

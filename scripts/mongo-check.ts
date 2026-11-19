@@ -9,6 +9,7 @@ const result = spawnSync(
     "run",
     "tests/accounts.test.ts",
     "tests/arena-expansion.test.ts",
+    "tests/fast-crypto.test.ts",
   ],
   { env: process.env, stdio: "inherit" },
 );

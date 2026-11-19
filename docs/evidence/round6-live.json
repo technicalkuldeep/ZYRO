@@ -1,0 +1,268 @@
+{
+  "verifiedAt": "2026-11-19T08:59:28.856Z",
+  "isolatedDatabase": true,
+  "realWebSocket": true,
+  "assets": {
+    "serverTime": 1795078768856,
+    "generation": 1,
+    "metrics": {
+      "received": 2880,
+      "accepted": 2198,
+      "rejected": 0,
+      "reconnects": 0,
+      "gaps": 0
+    },
+    "assets": [
+      {
+        "pair": "BTC-USD",
+        "tick": {
+          "pair": "BTC-USD",
+          "price": 63663.69,
+          "time": 1795078769854,
+          "receivedAt": 1795078768760,
+          "sequence": 139750401204,
+          "tradeId": 1136566555,
+          "bars": {
+            "60": {
+              "time": 1795078740,
+              "open": 63662.42,
+              "high": 63669.51,
+              "low": 63659.22,
+              "close": 63663.69
+            },
+            "300": {
+              "time": 1795078500,
+              "open": 63633.43,
+              "high": 63717.68,
+              "low": 63630.97,
+              "close": 63663.69
+            }
+          }
+        },
+        "status": "Live"
+      },
+      {
+        "pair": "ETH-USD",
+        "tick": {
+          "pair": "ETH-USD",
+          "price": 1801.48,
+          "time": 1795078768596,
+          "receivedAt": 1795078767528,
+          "sequence": 105368127049,
+          "tradeId": 856497830,
+          "bars": {
+            "60": {
+              "time": 1795078740,
+              "open": 1802.05,
+              "high": 1802.15,
+              "low": 1801.45,
+              "close": 1801.48
+            },
+            "300": {
+              "time": 1795078500,
+              "open": 1800.62,
+              "high": 1803.13,
+              "low": 1800.47,
+              "close": 1801.48
+            }
+          }
+        },
+        "status": "Live"
+      },
+      {
+        "pair": "SOL-USD",
+        "tick": {
+          "pair": "SOL-USD",
+          "price": 74.47,
+          "time": 1795078767783,
+          "receivedAt": 1795078766685,
+          "sequence": 33932018688,
+          "tradeId": 361759405,
+          "bars": {
+            "60": {
+              "time": 1795078740,
+              "open": 74.5,
+              "high": 74.52,
+              "low": 74.47,
+              "close": 74.47
+            },
+            "300": {
+              "time": 1795078500,
+              "open": 74.48,
+              "high": 74.59,
+              "low": 74.46,
+              "close": 74.47
+            }
+          }
+        },
+        "status": "Live"
+      }
+    ]
+  },
+  "round": {
+    "_id": "fast:BTC-USD:1795078620000",
+    "attempts": 2,
+    "createdAt": "2026-11-19T08:55:43.979Z",
+    "nextAttempt": "2026-11-19T08:59:10.000Z",
+    "spec": {
+      "version": 1,
+      "pair": "BTC-USD",
+      "provider": "Coinbase Exchange",
+      "entryOpens": 1795078560000,
+      "cutoff": 1795078615000,
+      "start": 1795078620000,
+      "end": 1795078740000,
+      "startingCandle": 1795078560,
+      "endingCandle": 1795078680,
+      "granularity": 60,
+      "operator": "STRICT_GT_LT_8_DECIMAL_UNITS",
+      "tie": "REFUND",
+      "payout": "WIN_2X_LOSS_0",
+      "unavailable": "RETRY_30_SECONDS_REFUND_AFTER_1_HOUR",
+      "timezone": "UTC"
+    },
+    "specHash": "d9fc6c25bee9f6024115e11792e9c95525dd6226370a72669ace0b6e3c3a6e93",
+    "status": "SETTLED",
+    "revision": 1,
+    "opening": {
+      "time": 1795078560,
+      "low": 63633.47,
+      "high": 63717.68,
+      "open": 63633.47,
+      "close": 63701.18,
+      "volume": 5.64530944,
+      "raw": [
+        1795078560,
+        63633.47,
+        63717.68,
+        63633.47,
+        63701.18,
+        5.64530944
+      ]
+    },
+    "openingVerifiedAt": "2026-11-19T08:57:11.964Z",
+    "evidence": {
+      "opening": {
+        "time": 1795078560,
+        "low": 63633.47,
+        "high": 63717.68,
+        "open": 63633.47,
+        "close": 63701.18,
+        "volume": 5.64530944,
+        "raw": [
+          1795078560,
+          63633.47,
+          63717.68,
+          63633.47,
+          63701.18,
+          5.64530944
+        ]
+      },
+      "closing": {
+        "time": 1795078680,
+        "low": 63662.42,
+        "high": 63678.16,
+        "open": 63674.91,
+        "close": 63662.42,
+        "volume": 0.76638648,
+        "raw": [
+          1795078680,
+          63662.42,
+          63678.16,
+          63674.91,
+          63662.42,
+          0.76638648
+        ]
+      },
+      "product": "BTC-USD",
+      "provider": "Coinbase Exchange",
+      "fetchedAt": "2026-11-19T08:59:11.923Z",
+      "openingVerifiedAt": "2026-11-19T08:57:11.964Z",
+      "closingVerifiedAt": "2026-11-19T08:59:11.923Z",
+      "specHash": "d9fc6c25bee9f6024115e11792e9c95525dd6226370a72669ace0b6e3c3a6e93",
+      "urls": [
+        "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60&start=2026-11-19T08:56:00.000Z&end=2026-11-19T08:57:00.000Z",
+        "https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60&start=2026-11-19T08:58:00.000Z&end=2026-11-19T08:59:00.000Z"
+      ],
+      "responseFormat": "Coinbase [time,low,high,open,close,volume]; HTTP 200; completed exact timestamps"
+    },
+    "outcome": "DOWN"
+  },
+  "prediction": {
+    "id": "98446a7d-b861-4856-bd33-066c5182d80a",
+    "choice": "UP",
+    "stake": 10,
+    "result": {
+      "values": [],
+      "label": "DOWN",
+      "verdict": "LOSS"
+    },
+    "payout": 0
+  },
+  "balance": {
+    "available": 90,
+    "committed": 0
+  },
+  "ledger": [
+    {
+      "id": "b4b9eeec-e875-4b57-aebc-04c5e2fe04ba",
+      "operation": "settle:98446a7d-b861-4856-bd33-066c5182d80a",
+      "kind": "LOSS",
+      "amount": 0,
+      "before": 90,
+      "after": 90
+    },
+    {
+      "id": "3a990d7f-15fd-4091-8bcb-1d60fd67745f",
+      "operation": "stake:98446a7d-b861-4856-bd33-066c5182d80a",
+      "kind": "STAKE",
+      "amount": -10,
+      "before": 100,
+      "after": 90
+    }
+  ],
+  "replayedSettlementEntries": 1,
+  "databaseReconnected": true,
+  "refreshedBrowser": true,
+  "metrics": {
+    "messages": 26,
+    "frames": 19,
+    "maxReceiveToChartMs": 616,
+    "totalReceiveToChartMs": 2588,
+    "historyLoads": 1,
+    "gaps": 0
+  },
+  "responsiveness": {
+    "frames": 60,
+    "maxFrameWaitMs": 21.30000001192093,
+    "meanFrameWaitMs": 16.443333332737286
+  },
+  "assetChanges": [
+    {
+      "listeners": 7,
+      "heap": 35672583
+    },
+    {
+      "listeners": 7,
+      "heap": 44058970
+    },
+    {
+      "listeners": 7,
+      "heap": 21977974
+    },
+    {
+      "listeners": 7,
+      "heap": 31357426
+    },
+    {
+      "listeners": 7,
+      "heap": 41193242
+    },
+    {
+      "listeners": 7,
+      "heap": 23333354
+    }
+  ],
+  "remainingSSEListeners": 0,
+  "pageErrors": []
+}

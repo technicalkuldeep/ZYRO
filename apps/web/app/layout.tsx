@@ -3,6 +3,7 @@ import { Shell } from "../components/shell";
 import "./globals.css";
 import "./premium.css";
 import "./arena-expansion.css";
+import "./fast-crypto.css";
 export const metadata: Metadata = {
   title: "ZYRO — Predict Freely. Settle Privately.",
   description:

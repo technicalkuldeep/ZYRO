@@ -1,6 +1,7 @@
 node_modules/
 .next/
 .next-qa/
+.next-qa6/
 dist/
 .env
 .env.local

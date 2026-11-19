@@ -383,16 +383,20 @@ export function RoundHistory({ rounds }: { rounds: Round[] }) {
               <td>
                 <Link href={roundHref(r)}>
                   <strong>
-                    {r.marketId
-                      ? r.marketId.split(":")[0]
-                      : r.gameKey || "Quick draw"}{" "}
+                    {r.gameKey === "crypto-fast"
+                      ? `${r.marketId?.split(":")[1]} · 2-minute`
+                      : r.marketId
+                        ? r.marketId.split(":")[0]
+                        : r.gameKey || "Quick draw"}{" "}
                     · {r.choice || r.side}
                   </strong>
                   <small className="table-sub">
                     {date(r.createdAt)} ·{" "}
-                    {r.gameKind === "market"
-                      ? "Scheduled market"
-                      : "Server-verified practice"}
+                    {r.gameKey === "crypto-fast"
+                      ? "Live crypto · Virtual points"
+                      : r.gameKind === "market"
+                        ? "Scheduled market"
+                        : "Server-verified practice"}
                   </small>
                 </Link>
               </td>

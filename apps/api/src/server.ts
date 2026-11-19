@@ -5,6 +5,8 @@ import { z } from "zod";
 import { Accounts } from "./accounts.js";
 import { Fault } from "./engine.js";
 import { arenaServices } from "./arena-services.js";
+import { livePrices } from "./live-prices.js";
+livePrices.start();
 const network = z
   .enum(["testnet", "regtest"])
   .parse(process.env.ZCASH_NETWORK || "testnet");
@@ -46,6 +48,7 @@ async function work() {
   working = true;
   try {
     const service = await arenaServices(await accounts());
+    await service.fast.tick();
     if (Date.now() - lastSeed > 300000) {
       await service.crypto.seed();
       lastSeed = Date.now();
@@ -60,12 +63,18 @@ async function work() {
     working = false;
   }
 }
-const worker = setInterval(() => void work(), 15000);
+const worker = setInterval(() => void work(), 5000);
 void work();
-process.on("SIGINT", () =>
+const shutdown = () => {
+  livePrices.stop();
+  clearInterval(worker);
   server.close(() => {
     clearInterval(worker);
     void accountStore?.client.close();
     void store.close();
-  }),
-);
+  });
+  // Long-lived SSE responses otherwise keep server.close waiting indefinitely.
+  server.closeAllConnections();
+};
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);

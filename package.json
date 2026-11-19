@@ -24,7 +24,8 @@
     "test:mongo": "tsx --env-file-if-exists=.env scripts/mongo-check.ts",
     "test:product-browser": "tsx --env-file-if-exists=.env scripts/product-browser-check.ts",
     "test:arena-browser": "tsx --env-file-if-exists=.env scripts/round5-browser.ts",
-    "test:crypto-live": "tsx --env-file-if-exists=.env scripts/round5-live.ts"
+    "test:crypto-live": "tsx --env-file-if-exists=.env scripts/round5-live.ts",
+    "test:fast-live": "tsx --env-file-if-exists=.env scripts/round6-live.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",

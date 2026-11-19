@@ -1,0 +1,33 @@
+﻿ M .gitignore
+ M apps/api/src/account-routes.ts
+ M apps/api/src/arena-services.ts
+ M apps/api/src/server.ts
+ M apps/web/app/layout.tsx
+ M apps/web/components/arena-hub.tsx
+ M apps/web/components/arena-product.tsx
+ M apps/web/components/crypto-experience.tsx
+ M apps/web/next-env.d.ts
+ M apps/web/package.json
+ M eslint.config.js
+ M package-lock.json
+ M package.json
+ M scripts/mongo-check.ts
+?? apps/api/src/fast-crypto.ts
+?? apps/api/src/live-prices.ts
+?? apps/web/app/arena/crypto/fast/
+?? apps/web/app/fast-crypto.css
+?? apps/web/components/fast-crypto.tsx
+?? apps/web/components/live-crypto-chart.tsx
+?? docs/evidence/round6-live-first.json
+?? docs/evidence/round6-live.json
+?? docs/round6-git-status.txt
+?? docs/round6-report.md
+?? docs/screenshots/round6-awaiting-outcome-1440.png
+?? docs/screenshots/round6-live-chart-1440.png
+?? docs/screenshots/round6-locked-position-1440.png
+?? docs/screenshots/round6-mobile-390.png
+?? docs/screenshots/round6-settled-result-1440.png
+?? docs/screenshots/round6-settled-result-390.png
+?? scripts/round6-live.ts
+?? scripts/round6-security.mjs
+?? tests/fast-crypto.test.ts

@@ -12,6 +12,7 @@ import {
 import { useData, api, DataState } from "./data";
 import { useAuth, points } from "./auth";
 import type { ArenaData } from "./arena-product";
+import { LiveCryptoChart } from "./live-crypto-chart";
 export type CandleUI = { time: number; close: number; raw: number[] };
 export type CryptoMarketUI = {
   _id: string;
@@ -119,56 +120,6 @@ export function CryptoCard({ market: m }: { market: CryptoMarketUI }) {
     </Link>
   );
 }
-export function PriceChart({
-  candles,
-  threshold,
-}: {
-  candles: CandleUI[];
-  threshold: number;
-}) {
-  const values = candles.map((c) => c.close);
-  if (!values.length) return <p>No completed chart data available.</p>;
-  const min = Math.min(...values, threshold) * 0.9998,
-    max = Math.max(...values, threshold) * 1.0002,
-    scale = (n: number) => 220 - ((n - min) / (max - min)) * 190;
-  const line = values
-    .map(
-      (v, i) =>
-        `${i === 0 ? "M" : "L"}${(i / (values.length - 1 || 1)) * 760},${scale(v)}`,
-    )
-    .join(" ");
-  const y = scale(threshold);
-  return (
-    <div className="crypto-price-chart">
-      <svg
-        viewBox="0 0 760 245"
-        role="img"
-        aria-label={`Completed one-minute candle closes. Fixed threshold ${usd(threshold)}.`}
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <linearGradient id="price-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop stopColor="currentColor" stopOpacity=".16" />
-            <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        {[35, 95, 155, 215].map((v) => (
-          <path key={v} d={`M0 ${v} H760`} className="chart-gridline" />
-        ))}
-        <path d={`${line} L760 245 L0 245 Z`} fill="url(#price-fill)" />
-        <path d={line} fill="none" stroke="currentColor" strokeWidth="2" />
-        <path d={`M0 ${y} H760`} className="threshold-line" />
-        <text x="8" y={Math.max(15, y - 8)} className="threshold-label">
-          THRESHOLD {usd(threshold)}
-        </text>
-      </svg>
-      <div className="chart-times">
-        <span>{utc(candles[0].time * 1000)}</span>
-        <span>{utc(candles.at(-1)!.time * 1000)}</span>
-      </div>
-    </div>
-  );
-}
 export function CryptoDetail({ id }: { id: string }) {
   const {
     data: m,
@@ -177,11 +128,6 @@ export function CryptoDetail({ id }: { id: string }) {
   } = useData<CryptoMarketUI>(`/account/crypto/${encodeURIComponent(id)}`);
   const arena = useData<ArenaData>("/account/arena");
   const { refresh } = useAuth();
-  const price = useData<{
-    candles: CandleUI[];
-    source: string;
-    fetchedAt: string;
-  }>(`/account/prices/${id.split(":")[0]}`);
   const [side, setSide] = useState("YES"),
     [stake, setStake] = useState("10"),
     [busy, setBusy] = useState(false),
@@ -237,7 +183,7 @@ export function CryptoDetail({ id }: { id: string }) {
     }
   }
   async function update() {
-    await Promise.all([reload(), arena.reload(), price.reload()]);
+    await Promise.all([reload(), arena.reload()]);
     await refresh();
   }
   return (
@@ -264,31 +210,14 @@ export function CryptoDetail({ id }: { id: string }) {
           <section className="crypto-chart-panel">
             <div className="crypto-price-heading">
               <div>
-                <span>MOST RECENT COMPLETED CLOSE</span>
-                <strong className="mono">
-                  {price.data ? usd(price.data.candles.at(-1)!.close) : "—"}
-                </strong>
+                <span>IMMUTABLE SCHEDULED THRESHOLD</span>
+                <strong className="mono">{usd(m.spec.threshold)}</strong>
               </div>
               <button className="button ghost" onClick={() => void update()}>
                 <RefreshCw size={14} /> Refresh
               </button>
             </div>
-            {price.data ? (
-              <PriceChart
-                candles={price.data.candles}
-                threshold={m.spec.threshold}
-              />
-            ) : (
-              <DataState error={price.error} retry={price.reload} />
-            )}
-            <p className="chart-provenance">
-              Coinbase Exchange · Completed 1m candles ·{" "}
-              {price.data
-                ? `Fetched ${utc(price.data.fetchedAt)}`
-                : "Unavailable"}
-              <br />
-              Recent historical data, not a live price feed.
-            </p>
+            <LiveCryptoChart pair={m.spec.pair} reference={m.spec.threshold} />
           </section>
           <div className="market-timeline">
             <div>

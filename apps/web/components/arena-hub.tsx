@@ -112,6 +112,18 @@ function DiscoveryPage({
     arena.data?.rounds.filter((r) => r.status === "PENDING") || [];
   return (
     <div className="arena-v5">
+      {(home || initialType === "crypto") && (
+        <Link href="/arena/crypto/fast" className="fast-feature">
+          <span>
+            <small>COINBASE EXCHANGE / VIRTUAL POINTS</small>
+            <strong>2-Minute Live Crypto Predictions</strong>
+            <small>
+              BTC · ETH · SOL — Choose UP or DOWN before the window begins.
+            </small>
+          </span>
+          <span>↗</span>
+        </Link>
+      )}
       <div className="arena-heading">
         <div>
           <span className="overline green">THE ARENA / FREE TO PLAY</span>
@@ -474,6 +486,8 @@ function LeaderPreview() {
   );
 }
 export function roundHref(r: Round) {
+  if (r.gameKey === "crypto-fast")
+    return `/arena/crypto/fast?round=${encodeURIComponent(r.marketId || "")}`;
   return r.marketId
     ? `/arena/crypto/${encodeURIComponent(r.marketId)}`
     : `/arena/games/${gameDefinition(r.gameKey || "")?.key || "quick-draw"}`;
