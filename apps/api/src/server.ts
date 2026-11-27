@@ -55,7 +55,7 @@ async function accounts() {
 }
 const { app, engine } = createApp(store, accounts, testnetTazStore);
 await engine.seed();
-const server = app.listen(Number(process.env.PORT || 4000), "127.0.0.1", () =>
+const server = app.listen(Number(process.env.PORT || 4000), "0.0.0.0", () =>
   logger.info({ port: process.env.PORT || 4000, network }, "ZYRO API ready"),
 );
 let working = false,
