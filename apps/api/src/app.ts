@@ -15,7 +15,13 @@ import { FundingService } from "./funding.js";
 import { demoWalletConfig } from "./demo-wallet.js";
 import { accountRoutes } from "./account-routes.js";
 import { Accounts } from "./accounts.js";
-export function createApp(store: Store, accounts?: () => Promise<Accounts>) {
+import { testnetTazReadRouter } from "./taz-markets/testnet-routes.js";
+import type { TazStore } from "./taz-markets/store.js";
+export function createApp(
+  store: Store,
+  accounts?: () => Promise<Accounts>,
+  testnetTaz?: TazStore,
+) {
   const app = express();
   const engine = new Engine(store);
   const monitor = new TransactionMonitor(store);
@@ -58,6 +64,7 @@ export function createApp(store: Store, accounts?: () => Promise<Accounts>) {
       configuredNetwork: process.env.ZCASH_NETWORK || "testnet",
       storage: process.env.DATABASE_URL ? "postgresql" : "sqlite-local",
       escrow: "not-integrated",
+      testnetTazLedger: testnetTaz ? "dedicated-mongodb" : "not-configured",
     }),
   );
   app.use("/api", async (req, res, next) => {
@@ -89,6 +96,21 @@ export function createApp(store: Store, accounts?: () => Promise<Accounts>) {
     }
   });
   app.get("/api/session", (_req, res) => res.json(res.locals.session));
+  if (testnetTaz) {
+    app.use(
+      "/api/testnet/taz",
+      testnetTazReadRouter(testnetTaz, async (_req, res) => res.locals.session?.id),
+    );
+  } else {
+    app.all("/api/testnet/taz/*path", (_req, res) =>
+      res.status(503).json({
+        error: "Dedicated Testnet TAZ ledger is not configured",
+        network: "testnet",
+        fundingEnabled: false,
+        payoutEnabled: false,
+      }),
+    );
+  }
   app.get("/api/markets", async (_req, res) =>
     res.json(await engine.markets()),
   );
