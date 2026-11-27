@@ -452,6 +452,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "f4jumble"
+version = "0.1.2"
+source = "git+https://github.com/zcash/librustzcash.git?rev=eb38d7a373661179dbc083a2fd58b3a6c9b25818#eb38d7a373661179dbc083a2fd58b3a6c9b25818"
+dependencies = [
+ "blake2b_simd",
+]
+
+[[package]]
 name = "ff"
 version = "0.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1357,6 +1365,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "zcash_address"
+version = "0.14.0-pre.2"
+source = "git+https://github.com/zcash/librustzcash.git?rev=eb38d7a373661179dbc083a2fd58b3a6c9b25818#eb38d7a373661179dbc083a2fd58b3a6c9b25818"
+dependencies = [
+ "bech32",
+ "bs58",
+ "corez",
+ "f4jumble",
+ "zcash_encoding",
+ "zcash_protocol",
+]
+
+[[package]]
 name = "zcash_encoding"
 version = "0.5.0"
 source = "git+https://github.com/zcash/librustzcash.git?rev=eb38d7a373661179dbc083a2fd58b3a6c9b25818#eb38d7a373661179dbc083a2fd58b3a6c9b25818"
@@ -1532,8 +1553,12 @@ name = "zyro-transaction-inspect"
 version = "0.1.0"
 dependencies = [
  "hex",
+ "orchard",
  "pczt",
+ "serde",
  "serde_json",
+ "zcash_address",
+ "zcash_note_encryption",
  "zcash_primitives",
  "zcash_protocol",
 ]

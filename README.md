@@ -45,6 +45,8 @@ Transparent financial networks expose payment relationships. ZYRO combines off-c
 
 **Real public-testnet integration is demonstrated:** a locally constructed shielded transfer is confirmed, and two challenge-specific shielded payments were recognized with exact memos/amounts. The wallet and both demonstration participants are developer-controlled. Real 2-of-3 rerandomized FROST is verified in an isolated Rust lab, **not integrated escrow**. No threshold payout, refund, live oracle or market settlement has been executed. Credits cannot be bought, transferred or redeemed.
 
+[`/testnet/markets`](apps/web/app/testnet/markets/page.tsx) is a read-only judge preview. It explicitly disables live funding and shows the historical developer-controlled notes; they were not independent players and no payout occurred. Do not send TAZ through that page.
+
 Transfer: [`0ce5d017e8a3c72751913348b1c5a9e2bf1ff742386776fa800903046b4a4a0c`](https://testnet.zcashexplorer.app/transactions/0ce5d017e8a3c72751913348b1c5a9e2bf1ff742386776fa800903046b4a4a0c), mined at **4,633,072**, observed with **3 confirmations**. [Reproduce the testnet demo](docs/testnet-demo.md), [inspect FROST scope](docs/frost-integration.md), and [review blockers](docs/blockers.md).
 
 ## Run locally
@@ -166,4 +168,4 @@ regtest. See the [Phase 3 checkpoint](docs/phase3-checkpoint.md) for precise gap
 
 ## License
 
-[MIT](LICENSE). Contributions welcome; never commit wallet material or `.env` files.
+[MIT](LICENSE) applies to the project's original code. The vendored wallet engine under `apps/web/public/zcash-wallet/engine/` has its own BUSL-1.1 license and third-party notices; that material is not relicensed by the root MIT license. A bounty-specific MIT package must exclude it or obtain compatible rights. Contributions welcome; never commit wallet material or `.env` files.

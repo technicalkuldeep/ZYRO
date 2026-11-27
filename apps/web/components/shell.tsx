@@ -56,6 +56,8 @@ function Frame({ children }: { children: React.ReactNode }) {
     await api("/auth/logout", {});
     window.location.assign("/");
   }
+  if (path === "/") return children;
+
   return (
     <>
       <a className="skip" href="#main">
@@ -191,16 +193,7 @@ function Frame({ children }: { children: React.ReactNode }) {
             </Link>
           </aside>
         )}
-        <main
-          id="main"
-          className={
-            workspace
-              ? "product-main"
-              : path === "/"
-                ? "landing-main"
-                : "public-main"
-          }
-        >
+        <main id="main" className={workspace ? "product-main" : "public-main"}>
           {workspace && (
             <div className="workspace-topline">
               <span>
